@@ -66,9 +66,9 @@ html, body { background: transparent; color: var(--white); font-family: var(--fo
 .list-header { background:var(--navy); border:1px solid rgba(0,210,255,.3); border-radius:12px; padding:12px; display:flex; align-items:center; justify-content:center; margin-bottom:10px; box-shadow:0 0 15px rgba(0,210,255,.1); }
 .list-header-title { font-family:var(--font-rajdhani),sans-serif; font-weight:700; font-size:13px; letter-spacing:4px; color:var(--cyan); text-transform:uppercase; text-shadow:0 0 8px var(--cyan); text-align:center; display:block; line-height: 1.4; }
 .donors-list { display:flex; flex-direction:column; gap:8px; }
-.donor-card { --card-color: var(--cyan); --card-border: rgba(0,210,255,.2); background:linear-gradient(135deg,#1f1a00 0%,var(--navy2) 80%); border:1px solid var(--card-border); border-radius:10px; padding:10px 14px; display:flex; align-items:center; gap:12px; position:relative; overflow:hidden; animation:slideIn .5s ease both; }
+.donor-card { --card-color: var(--gold); --card-border: rgba(255,215,0,.4); background:linear-gradient(135deg,#1f1a00 0%,var(--navy2) 80%); border:1px solid var(--card-border); border-radius:10px; padding:10px 14px; display:flex; align-items:center; gap:12px; position:relative; overflow:hidden; animation:slideIn .5s ease both; }
 .donor-card::before { content:""; position:absolute; left:0; top:0; bottom:0; width:4px; background:var(--card-color); box-shadow:0 0 10px var(--card-color); }
-.donor-card[data-rank="1"] { --card-color: var(--gold); --card-border: rgba(255,215,0,.4); background:linear-gradient(135deg,#1f1a00 0%,var(--navy2) 80%); }
+
 
 @keyframes slideIn { from{opacity:0;transform:translateX(-20px)} to{opacity:1;transform:translateX(0)} }
 .donor-rank { font-family:var(--font-orbitron),monospace; font-size:15px; font-weight:900; color:var(--card-color); text-shadow:0 0 10px var(--card-color); width:24px; text-align:center; flex-shrink:0; }
@@ -76,8 +76,7 @@ html, body { background: transparent; color: var(--white); font-family: var(--fo
 .donor-info { flex:1; min-width:0; }
 .donor-name { font-family:var(--font-rajdhani),sans-serif; font-weight:700; font-size:16px; color:var(--white); text-transform:uppercase; letter-spacing:1.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .donor-sub  { font-size:10px; letter-spacing:2px; color:var(--muted); text-transform:uppercase; font-family:var(--font-rajdhani),sans-serif; }
-.donor-amount { background:rgba(0,0,0,.3); border:1px solid var(--cyan); border-radius:6px; padding:4px 10px; font-family:var(--font-orbitron),monospace; font-size:13px; font-weight:700; color:var(--white); white-space:nowrap; flex-shrink:0; }
-.donor-card[data-rank="1"] .donor-amount { border-color:var(--gold); color:var(--gold); }
+.donor-amount { background:rgba(0,0,0,.3); border:1px solid var(--gold); border-radius:6px; padding:4px 10px; font-family:var(--font-orbitron),monospace; font-size:13px; font-weight:700; color:var(--gold); white-space:nowrap; flex-shrink:0; }
 .empty-state { text-align:center; padding:30px; color:var(--muted); font-family:var(--font-rajdhani),sans-serif; font-size:14px; letter-spacing:2px; }
 
 .admin-root { min-height:100vh; background:radial-gradient(ellipse at top,#0a1f3f 0%,#050d1a 60%); }

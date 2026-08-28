@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
@@ -93,7 +93,7 @@ function WidgetInner() {
       {showDonors && (
         <div className="donor-block">
           <div className="list-header">
-            <span className="list-header-title">⚡ TOP SUPPORTERS</span>
+            <span className="list-header-title">TOP SUPPORTERS</span>
           </div>
           <div className="donors-list">
             {state.donors.length === 0 && (
