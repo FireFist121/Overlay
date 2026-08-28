@@ -62,7 +62,7 @@ html, body { background: transparent; color: var(--white); font-family: var(--fo
   text-shadow: 0 0 5px rgba(0, 210, 255, 0.2);
 }
 
-.donor-block { }
+.donor-block { width: 200px; }
 .list-header { background:var(--navy); border:1px solid rgba(0,210,255,.3); border-radius:12px; padding:12px; display:flex; align-items:center; justify-content:center; margin-bottom:10px; box-shadow:0 0 15px rgba(0,210,255,.1); }
 .list-header-title { font-family:var(--font-rajdhani),sans-serif; font-weight:700; font-size:13px; letter-spacing:4px; color:var(--cyan); text-transform:uppercase; text-shadow:0 0 8px var(--cyan); }
 .donors-list { display:flex; flex-direction:column; gap:8px; }
