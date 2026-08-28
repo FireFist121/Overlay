@@ -1,0 +1,369 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Overlay Admin â€“ PitajiPlayz Style</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Orbitron:wght@700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --cyan:#00d4ff; --cyan2:#00aaff; --navy:#050d1a; --navy2:#0a1628; --navy3:#0d1f3c;
+      --gold:#ffd700; --white:#fff; --muted:rgba(255,255,255,.45);
+      --bg:#07111f; --card:#0c1a2e; --border:rgba(0,212,255,.18);
+      --green:#00ff88; --red:#ff4d6d; --orange:#ff9f40;
+    }
+    html,body{min-height:100vh;background:var(--bg);font-family:"Inter",sans-serif;color:var(--white);}
+    body{background:radial-gradient(ellipse at top,#0a1f3f 0%,#050d1a 60%);}
+
+    /* â”€â”€ NAV â”€â”€ */
+    .nav{display:flex;align-items:center;gap:16px;padding:16px 24px;border-bottom:1px solid var(--border);background:rgba(5,13,26,.85);backdrop-filter:blur(12px);position:sticky;top:0;z-index:100;}
+    .nav-logo{font-family:"Orbitron",monospace;font-size:16px;font-weight:900;color:var(--cyan);text-shadow:0 0 12px var(--cyan);letter-spacing:2px;}
+    .nav-badge{font-size:9px;letter-spacing:2px;background:rgba(0,212,255,.12);border:1px solid rgba(0,212,255,.3);border-radius:20px;padding:2px 8px;color:var(--cyan);}
+    .nav-live{display:flex;align-items:center;gap:6px;margin-left:auto;font-size:11px;letter-spacing:2px;color:var(--muted);}
+    .live-dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);animation:dotpulse 1.5s ease-in-out infinite;}
+    @keyframes dotpulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+
+    /* â”€â”€ LAYOUT â”€â”€ */
+    .layout{display:grid;grid-template-columns:1fr 1fr;gap:20px;padding:24px;max-width:1000px;margin:0 auto;}
+    @media(max-width:700px){.layout{grid-template-columns:1fr;}}
+
+    /* â”€â”€ CARD â”€â”€ */
+    .card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:22px;position:relative;overflow:hidden;}
+    .card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);opacity:.5;}
+    .card-title{font-family:"Rajdhani",sans-serif;font-size:12px;font-weight:700;letter-spacing:4px;color:var(--cyan);text-transform:uppercase;margin-bottom:18px;display:flex;align-items:center;gap:8px;}
+    .card-title span{opacity:.5;font-size:16px;}
+
+    /* â”€â”€ FORM ELEMENTS â”€â”€ */
+    label{display:block;font-size:11px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:6px;margin-top:14px;}
+    label:first-child{margin-top:0;}
+    input[type=text],input[type=number]{
+      width:100%;padding:10px 14px;background:rgba(0,212,255,.05);
+      border:1px solid rgba(0,212,255,.25);border-radius:10px;
+      color:var(--white);font-family:"Inter",sans-serif;font-size:14px;
+      outline:none;transition:border-color .2s,box-shadow .2s;
+    }
+    input[type=text]:focus,input[type=number]:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(0,212,255,.12);}
+    input[type=number]{font-family:"Orbitron",monospace;font-size:16px;}
+
+    /* â”€â”€ BUTTONS â”€â”€ */
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 18px;border-radius:10px;border:none;cursor:pointer;font-family:"Rajdhani",sans-serif;font-weight:700;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;transition:all .2s;white-space:nowrap;}
+    .btn-primary{background:linear-gradient(135deg,#0044aa,#0066cc);color:var(--white);border:1px solid rgba(0,212,255,.35);box-shadow:0 0 16px rgba(0,212,255,.2);}
+    .btn-primary:hover{box-shadow:0 0 24px rgba(0,212,255,.4);transform:translateY(-1px);}
+    .btn-cyan{background:linear-gradient(135deg,#003a4f,#005a78);color:var(--cyan);border:1px solid rgba(0,212,255,.4);box-shadow:0 0 12px rgba(0,212,255,.15);}
+    .btn-cyan:hover{box-shadow:0 0 20px rgba(0,212,255,.35);transform:translateY(-1px);}
+    .btn-green{background:linear-gradient(135deg,#003a22,#005a35);color:var(--green);border:1px solid rgba(0,255,136,.35);}
+    .btn-green:hover{box-shadow:0 0 16px rgba(0,255,136,.3);transform:translateY(-1px);}
+    .btn-red{background:linear-gradient(135deg,#3a000a,#5a001a);color:var(--red);border:1px solid rgba(255,77,109,.35);}
+    .btn-red:hover{box-shadow:0 0 16px rgba(255,77,109,.3);transform:translateY(-1px);}
+    .btn-orange{background:linear-gradient(135deg,#3a2000,#5a3200);color:var(--orange);border:1px solid rgba(255,159,64,.35);}
+    .btn-orange:hover{box-shadow:0 0 16px rgba(255,159,64,.3);transform:translateY(-1px);}
+    .btn-sm{padding:7px 12px;font-size:11px;}
+    .btn-full{width:100%;margin-top:10px;}
+    .btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
+
+    /* â”€â”€ TIMER DISPLAY â”€â”€ */
+    .timer-big{font-family:"Orbitron",monospace;font-size:48px;font-weight:900;color:var(--white);text-shadow:0 0 16px var(--cyan),0 0 40px rgba(0,212,255,.4);letter-spacing:4px;text-align:center;padding:16px 0;}
+    .timer-big.urgent{color:var(--red);text-shadow:0 0 16px var(--red),0 0 40px rgba(255,77,77,.4);animation:blink .5s ease-in-out infinite;}
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:.5}}
+    .timer-status{text-align:center;font-family:"Rajdhani",sans-serif;font-size:10px;letter-spacing:3px;color:var(--muted);margin-top:-8px;margin-bottom:10px;}
+
+    /* â”€â”€ PRESET BUTTONS â”€â”€ */
+    .presets{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+    .preset-btn{padding:6px 12px;background:rgba(0,212,255,.06);border:1px solid rgba(0,212,255,.2);border-radius:8px;color:var(--muted);font-family:"Rajdhani",sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;letter-spacing:1px;}
+    .preset-btn:hover{background:rgba(0,212,255,.15);color:var(--cyan);border-color:rgba(0,212,255,.4);}
+
+    /* â”€â”€ DONOR LIST IN ADMIN â”€â”€ */
+    .donor-admin-list{display:flex;flex-direction:column;gap:6px;max-height:320px;overflow-y:auto;margin-top:12px;}
+    .donor-admin-list::-webkit-scrollbar{width:4px;}
+    .donor-admin-list::-webkit-scrollbar-thumb{background:rgba(0,212,255,.3);border-radius:2px;}
+    .donor-admin-item{display:flex;align-items:center;gap:10px;padding:8px 12px;background:rgba(0,0,0,.25);border:1px solid rgba(0,212,255,.1);border-radius:10px;}
+    .dai-rank{font-family:"Orbitron",monospace;font-size:11px;color:var(--muted);width:18px;text-align:center;flex-shrink:0;}
+    .dai-name{font-family:"Rajdhani",sans-serif;font-weight:700;font-size:14px;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .dai-amt{font-family:"Orbitron",monospace;font-size:12px;color:var(--cyan);flex-shrink:0;}
+    .dai-del{background:none;border:none;cursor:pointer;color:rgba(255,77,109,.5);font-size:16px;transition:color .2s;padding:0 4px;}
+    .dai-del:hover{color:var(--red);}
+
+    /* â”€â”€ TOGGLE ROW â”€â”€ */
+    .toggle-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.06);}
+    .toggle-row:last-child{border-bottom:none;padding-bottom:0;}
+    .toggle-label{font-family:"Rajdhani",sans-serif;font-size:13px;font-weight:600;letter-spacing:1px;}
+    .toggle{position:relative;width:44px;height:24px;flex-shrink:0;}
+    .toggle input{opacity:0;width:0;height:0;position:absolute;}
+    .toggle-slider{position:absolute;inset:0;background:rgba(255,255,255,.1);border-radius:12px;cursor:pointer;transition:background .3s;border:1px solid rgba(255,255,255,.15);}
+    .toggle-slider::before{content:'';position:absolute;width:18px;height:18px;left:2px;top:2px;background:rgba(255,255,255,.5);border-radius:50%;transition:transform .3s;}
+    .toggle input:checked+.toggle-slider{background:rgba(0,212,255,.3);border-color:var(--cyan);}
+    .toggle input:checked+.toggle-slider::before{transform:translateX(20px);background:var(--cyan);box-shadow:0 0 8px var(--cyan);}
+
+    /* â”€â”€ TOAST â”€â”€ */
+    #admin-toast{position:fixed;bottom:24px;right:24px;background:linear-gradient(135deg,var(--navy3),var(--navy2));border:1px solid var(--cyan);border-radius:12px;padding:12px 20px;font-family:"Rajdhani",sans-serif;font-size:14px;color:var(--cyan);letter-spacing:1px;box-shadow:0 0 24px rgba(0,212,255,.3);transform:translateY(80px);transition:transform .4s cubic-bezier(.34,1.56,.64,1);z-index:999;}
+    #admin-toast.show{transform:translateY(0);}
+
+    /* full-width card spanning both columns */
+    .full-card{grid-column:1/-1;}
+  </style>
+</head>
+<body>
+
+<div class="nav">
+  <div class="nav-logo">OVERLAY CTRL</div>
+  <div class="nav-badge">OBS ADMIN</div>
+  <div class="nav-live"><div class="live-dot"></div>LIVE</div>
+</div>
+
+<div class="layout">
+
+  <!-- â”€â”€ TIMER CARD â”€â”€ -->
+  <div class="card">
+    <div class="card-title"><span>â±</span> Countdown Timer</div>
+
+    <div class="timer-big" id="admin-timer">00:00</div>
+    <div class="timer-status" id="timer-status-label">STOPPED</div>
+
+    <div class="btn-row">
+      <button class="btn btn-green" onclick="timerStart()">â–¶ Start</button>
+      <button class="btn btn-orange" onclick="timerPause()">â¸ Pause</button>
+      <button class="btn btn-red btn-sm" onclick="timerReset()">â†º Reset</button>
+    </div>
+
+    <label>Set Time (minutes)</label>
+    <input type="number" id="timer-input" value="10" min="1" max="999" placeholder="minutes"/>
+
+    <label style="margin-top:12px;">Quick Presets</label>
+    <div class="presets">
+      <div class="preset-btn" onclick="setPreset(5)">5 min</div>
+      <div class="preset-btn" onclick="setPreset(10)">10 min</div>
+      <div class="preset-btn" onclick="setPreset(15)">15 min</div>
+      <div class="preset-btn" onclick="setPreset(30)">30 min</div>
+      <div class="preset-btn" onclick="setPreset(60)">1 hr</div>
+      <div class="preset-btn" onclick="setPreset(90)">1.5 hr</div>
+    </div>
+
+    <label style="margin-top:14px;">Add / Remove Time</label>
+    <div class="btn-row">
+      <button class="btn btn-cyan btn-sm" onclick="addTime(1)">+1m</button>
+      <button class="btn btn-cyan btn-sm" onclick="addTime(5)">+5m</button>
+      <button class="btn btn-cyan btn-sm" onclick="addTime(10)">+10m</button>
+      <button class="btn btn-red btn-sm" onclick="addTime(-1)">âˆ’1m</button>
+      <button class="btn btn-red btn-sm" onclick="addTime(-5)">âˆ’5m</button>
+    </div>
+  </div>
+
+  <!-- â”€â”€ DONATOR CARD â”€â”€ -->
+  <div class="card">
+    <div class="card-title"><span>âš¡</span> Manage Donators</div>
+
+    <label>Donor Name</label>
+    <input type="text" id="donor-name" placeholder="e.g. Dhaval"/>
+
+    <label>Amount (â‚¹)</label>
+    <input type="number" id="donor-amount" placeholder="e.g. 102500" min="1"/>
+
+    <button class="btn btn-primary btn-full" onclick="addDonor()">âž• Add / Update Donor</button>
+
+    <div class="donor-admin-list" id="donor-admin-list">
+      <div style="color:var(--muted);font-family:'Rajdhani',sans-serif;font-size:13px;letter-spacing:2px;text-align:center;padding:20px;">NO DONATORS YET</div>
+    </div>
+
+    <div class="btn-row" style="margin-top:12px;">
+      <button class="btn btn-red btn-sm" onclick="clearAllDonors()">ðŸ—‘ Clear All</button>
+    </div>
+  </div>
+
+  <!-- â”€â”€ VISIBILITY / SETTINGS CARD â”€â”€ -->
+  <div class="card full-card">
+    <div class="card-title"><span>ðŸŽ›</span> Widget Visibility</div>
+    <div class="toggle-row">
+      <div class="toggle-label">Show Timer Widget</div>
+      <label class="toggle"><input type="checkbox" id="tog-timer" checked onchange="toggleVisibility('timer',this.checked)"/><div class="toggle-slider"></div></label>
+    </div>
+    <div class="toggle-row">
+      <div class="toggle-label">Show Donator Leaderboard</div>
+      <label class="toggle"><input type="checkbox" id="tog-donors" checked onchange="toggleVisibility('donors',this.checked)"/><div class="toggle-slider"></div></label>
+    </div>
+  </div>
+
+  <!-- ── WIDGET LINKS CARD ── -->
+  <div class="card full-card">
+    <div class="card-title"><span>🔗</span> Widget Links for OBS</div>
+    
+    <div style="display: flex; gap: 10px; margin-bottom: 12px; align-items: flex-end;">
+      <div style="flex: 1;">
+        <label>Combined Widget (Timer + Donors)</label>
+        <input type="text" id="link-combined" readonly />
+      </div>
+      <button class="btn btn-primary" onclick="copyLink('link-combined')">📋 Copy</button>
+    </div>
+
+    <div style="display: flex; gap: 10px; margin-bottom: 12px; align-items: flex-end;">
+      <div style="flex: 1;">
+        <label>Timer Only Widget</label>
+        <input type="text" id="link-timer" readonly />
+      </div>
+      <button class="btn btn-cyan" onclick="copyLink('link-timer')">📋 Copy</button>
+    </div>
+
+    <div style="display: flex; gap: 10px; align-items: flex-end;">
+      <div style="flex: 1;">
+        <label>Donator Leaderboard Only Widget</label>
+        <input type="text" id="link-donors" readonly />
+      </div>
+      <button class="btn btn-orange" onclick="copyLink('link-donors')">📋 Copy</button>
+    </div>
+  </div>
+
+</div>
+
+<div id="admin-toast"></div>
+
+<script>
+const KEY_DONORS='overlay_donors',KEY_TIMER='overlay_timer',KEY_SHOW_T='overlay_show_timer',KEY_SHOW_D='overlay_show_donors';
+let donors=[],timerState={remaining:0,running:false},adminTick=null;
+
+/* ── FORMAT ── */
+function pad(n){return String(n).padStart(2,'0')}
+function fmt(s){s=Math.max(0,s);const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sc=s%60;return `${pad(h)}:${pad(m)}:${pad(sc)}`;}
+function fmtAmt(n){return '₹'+Number(n).toLocaleString('en-IN')}
+
+/* ── BROADCAST ── */
+const bc=new BroadcastChannel('overlay_channel');
+function push(){
+  localStorage.setItem(KEY_TIMER,JSON.stringify(timerState));
+  localStorage.setItem(KEY_DONORS,JSON.stringify(donors));
+  bc.postMessage({type:'update'});
+}
+function notify(msg){bc.postMessage({type:'toast',msg});toast(msg);}
+
+/* ── ADMIN TIMER DISPLAY ── */
+function renderAdminTimer(){
+  const el=document.getElementById('admin-timer'),sl=document.getElementById('timer-status-label');
+  el.textContent=fmt(timerState.remaining);
+  el.classList.toggle('urgent',timerState.remaining<=30&&timerState.remaining>0&&timerState.running);
+  sl.textContent=timerState.running?'RUNNING':(timerState.remaining<=0?'FINISHED':'PAUSED');
+}
+
+function startAdminTick(){
+  if(adminTick)return;
+  adminTick=setInterval(()=>{
+    if(!timerState.running||timerState.remaining<=0)return;
+    timerState.remaining--;
+    if(timerState.remaining<=0){timerState.running=false;clearInterval(adminTick);adminTick=null;}
+    renderAdminTimer();
+    push();
+  },1000);
+}
+function stopAdminTick(){clearInterval(adminTick);adminTick=null;}
+
+/* ── TIMER ACTIONS ── */
+function timerStart(){
+  if(timerState.remaining<=0){
+    const mins=parseInt(document.getElementById('timer-input').value)||10;
+    timerState.remaining=mins*60;
+  }
+  timerState.running=true;
+  startAdminTick();
+  renderAdminTimer();push();notify('⏱ Timer Started!');
+}
+function timerPause(){
+  timerState.running=false;stopAdminTick();
+  renderAdminTimer();push();notify('⏸ Timer Paused');
+}
+function timerReset(){
+  const mins=parseInt(document.getElementById('timer-input').value)||10;
+  timerState={remaining:mins*60,running:false};
+  stopAdminTick();renderAdminTimer();push();notify('↺ Timer Reset');
+}
+function setPreset(m){
+  document.getElementById('timer-input').value=m;
+  timerState={remaining:m*60,running:false};
+  stopAdminTick();renderAdminTimer();push();notify(`⏱ Set to ${m} min`);
+}
+function addTime(m){
+  timerState.remaining=Math.max(0,timerState.remaining+m*60);
+  renderAdminTimer();push();notify(`${m>0?'+':'-'} ${Math.abs(m)} min`);
+}
+
+/* ── DONOR ACTIONS ── */
+function addDonor(){
+  const name=document.getElementById('donor-name').value.trim();
+  const amount=parseInt(document.getElementById('donor-amount').value)||0;
+  if(!name){toast('Enter a name!');return;}
+  if(!amount){toast('Enter an amount!');return;}
+  const idx=donors.findIndex(d=>d.name.toLowerCase()===name.toLowerCase());
+  if(idx>=0)donors[idx].amount=amount;
+  else donors.push({name,amount});
+  donors.sort((a,b)=>b.amount-a.amount);
+  document.getElementById('donor-name').value='';
+  document.getElementById('donor-amount').value='';
+  renderAdminDonors();push();notify(`✅ ${name} added!`);
+}
+function deleteDonor(name){
+  donors=donors.filter(d=>d.name!==name);
+  renderAdminDonors();push();notify(`🗑 ${name} removed`);
+}
+function clearAllDonors(){
+  if(!confirm('Clear ALL donors?'))return;
+  donors=[];renderAdminDonors();push();notify('🗑 All donors cleared');
+}
+function renderAdminDonors(){
+  const list=document.getElementById('donor-admin-list');
+  if(!donors.length){list.innerHTML='<div style="color:var(--muted);font-family:Rajdhani,sans-serif;font-size:13px;letter-spacing:2px;text-align:center;padding:20px;">NO DONATORS YET</div>';return;}
+  list.innerHTML='';
+  donors.forEach((d,i)=>{
+    const el=document.createElement('div');el.className='donor-admin-item';
+    el.innerHTML=`<div class="dai-rank">${i+1}</div><div class="dai-name">${d.name}</div><div class="dai-amt">${fmtAmt(d.amount)}</div><button class="dai-del" onclick="deleteDonor('${d.name.replace(/'/g,"\\'")}')">✕</button>`;
+    list.appendChild(el);
+  });
+}
+
+/* ── VISIBILITY ── */
+function toggleVisibility(which,val){
+  if(which==='timer')localStorage.setItem(KEY_SHOW_T,val);
+  else localStorage.setItem(KEY_SHOW_D,val);
+  bc.postMessage({type:'update'});
+}
+
+/* ── LINKS ── */
+function setupLinks() {
+  const base = window.location.href.replace('admin.html', 'widget.html');
+  document.getElementById('link-combined').value = base;
+  document.getElementById('link-timer').value = base + '?type=timer';
+  document.getElementById('link-donors').value = base + '?type=donors';
+}
+function copyLink(id) {
+  const el = document.getElementById(id);
+  el.select();
+  document.execCommand('copy');
+  toast('✅ Link Copied!');
+}
+
+/* ── TOAST ── */
+function toast(msg){const el=document.getElementById('admin-toast');el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2500);}
+
+/* ── INIT ── */
+function init(){
+  try{donors=JSON.parse(localStorage.getItem(KEY_DONORS)||'[]');}catch{donors=[];}
+  try{const ts=JSON.parse(localStorage.getItem(KEY_TIMER)||'null');if(ts)timerState=ts;}catch{}
+  const showT=localStorage.getItem(KEY_SHOW_T);const showD=localStorage.getItem(KEY_SHOW_D);
+  if(showT!==null)document.getElementById('tog-timer').checked=showT!=='false';
+  if(showD!==null)document.getElementById('tog-donors').checked=showD!=='false';
+  
+  renderAdminTimer();
+  renderAdminDonors();
+  setupLinks();
+  
+  if(timerState.running)startAdminTick();
+
+  /* Enter key to add donor */
+  document.getElementById('donor-amount').addEventListener('keydown',e=>{if(e.key==='Enter')addDonor();});
+  document.getElementById('donor-name').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('donor-amount').focus();});
+}
+init();
+</script>
+</body>
+</html>
+
+
+
+
