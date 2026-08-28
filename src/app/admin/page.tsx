@@ -32,21 +32,30 @@ function parseTimeInput(input: string): number {
 
 
 
-const AUTH_KEY    = "overlay_auth_v1";
-const LOGIN_EMAIL = "FIREFIST@MAIL.COM";
-const LOGIN_PASS  = "OVERLAY.PP";
+const AUTH_TOKEN_KEY = "overlay_session_token";
 
 function LoginScreen({ onLogin }: { onLogin: () => void }) {
   const [email, setEmail] = useState("");
   const [pass,  setPass]  = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const doLogin = () => {
-    if (email.trim().toUpperCase() === LOGIN_EMAIL && pass === LOGIN_PASS) {
-      localStorage.setItem(AUTH_KEY, "1");
+  const doLogin = async () => {
+    setLoading(true);
+    setError("");
+    try {
+      const res = await fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password: pass }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.token) { setError(data.error || "Invalid credentials."); setLoading(false); return; }
+      localStorage.setItem(AUTH_TOKEN_KEY, data.token);
       onLogin();
-    } else {
-      setError("Invalid email or password.");
+    } catch {
+      setError("Network error. Try again.");
+      setLoading(false);
     }
   };
 
@@ -79,8 +88,8 @@ function LoginScreen({ onLogin }: { onLogin: () => void }) {
             placeholder="••••••••" style={{ width:"100%", boxSizing:"border-box" }} />
         </div>
         {error && <div style={{ color:"#ff4444", fontSize:"12px", letterSpacing:"1px", marginBottom:"16px", textAlign:"center" }}>{error}</div>}
-        <button className="btn btn-primary btn-full" onClick={doLogin} style={{ letterSpacing:"3px" }}>
-          LOGIN
+        <button className="btn btn-primary btn-full" onClick={doLogin} style={{ letterSpacing:"3px" }} disabled={loading}>
+          {loading ? "VERIFYING..." : "LOGIN"}
         </button>
       </div>
     </div>
@@ -288,6 +297,7 @@ function AdminInner() {
   const linkDonors   = `${base}?room=${room}&type=donors`;
   const copyLink = (txt: string) => { navigator.clipboard.writeText(txt); showToast("Link Copied!"); };
 
+  if (!authChecked) return <div style={{ color: "#00d2ff", fontFamily: "Rajdhani", padding: 40, letterSpacing: 3, fontSize: 14, minHeight:"100vh", display:"flex", alignItems:"center", justifyContent:"center" }}>AUTHENTICATING...</div>;
   if (!isLoggedIn) return <LoginScreen onLogin={() => setIsLoggedIn(true)} />;
 
   if (!state) return <div style={{ color: "#00d2ff", fontFamily: "Rajdhani", padding: 40, letterSpacing: 3, fontSize: 14 }}>CONNECTING...</div>;
@@ -299,7 +309,12 @@ function AdminInner() {
         <span className="nav-badge">OBS ADMIN</span>
         <span className="nav-room">ROOM: {room}</span>
         <span className="nav-live"><span className="live-dot" />LIVE</span>
-        <button onClick={() => { localStorage.removeItem(AUTH_KEY); setIsLoggedIn(false); }}
+        <button onClick={async () => {
+            const token = localStorage.getItem(AUTH_TOKEN_KEY);
+            localStorage.removeItem(AUTH_TOKEN_KEY);
+            if (token) await fetch("/api/logout", { method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify({ token }) });
+            setIsLoggedIn(false);
+          }}
           style={{ marginLeft:"auto", padding:"6px 16px", background:"rgba(255,50,50,0.1)", border:"1px solid rgba(255,50,50,0.3)", borderRadius:"8px", color:"#ff6666", fontFamily:"var(--font-rajdhani),sans-serif", fontSize:"12px", letterSpacing:"2px", cursor:"pointer", transition:"all .2s" }}
           onMouseEnter={e => (e.currentTarget.style.background="rgba(255,50,50,0.2)")}
           onMouseLeave={e => (e.currentTarget.style.background="rgba(255,50,50,0.1)")}>
