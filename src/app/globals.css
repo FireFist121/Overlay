@@ -1,4 +1,4 @@
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+﻿*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
   --cyan:  #00d2ff;
@@ -66,7 +66,7 @@ html, body { background: transparent; color: var(--white); font-family: var(--fo
 .list-header { background:var(--navy); border:1px solid rgba(0,210,255,.3); border-radius:12px; padding:12px; display:flex; align-items:center; justify-content:center; margin-bottom:10px; box-shadow:0 0 15px rgba(0,210,255,.1); }
 .list-header-title { font-family:var(--font-rajdhani),sans-serif; font-weight:700; font-size:13px; letter-spacing:4px; color:var(--cyan); text-transform:uppercase; text-shadow:0 0 8px var(--cyan); text-align:center; display:block; line-height: 1.4; }
 .donors-list { display:flex; flex-direction:column; gap:8px; }
-.donor-card { --card-color: var(--cyan); --card-border: rgba(0,210,255,.2); background:linear-gradient(135deg, color-mix(in srgb, var(--card-color) 6%, #0a1628) 0%, var(--navy2) 70%); border:1px solid var(--card-border); border-radius:10px; padding:10px 14px; display:flex; align-items:center; gap:12px; position:relative; overflow:hidden; animation:slideIn .5s ease both; }
+.donor-card { --card-color: var(--cyan); --card-border: rgba(0,210,255,.2); background:linear-gradient(135deg,#1f1a00 0%,var(--navy2) 80%); border:1px solid var(--card-border); border-radius:10px; padding:10px 14px; display:flex; align-items:center; gap:12px; position:relative; overflow:hidden; animation:slideIn .5s ease both; }
 .donor-card::before { content:""; position:absolute; left:0; top:0; bottom:0; width:4px; background:var(--card-color); box-shadow:0 0 10px var(--card-color); }
 .donor-card[data-rank="1"] { --card-color: var(--gold); --card-border: rgba(255,215,0,.4); background:linear-gradient(135deg,#1f1a00 0%,var(--navy2) 80%); }
 
