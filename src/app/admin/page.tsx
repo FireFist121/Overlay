@@ -2,7 +2,7 @@
 import { useState, useEffect, useCallback, useRef, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 
-interface Donor { name: string; amount: number; }
+interface Donor { name: string; amount: number; color?: string; }
 interface TimerState { remaining: number; running: boolean; total: number; targetEndTime?: number; }
 interface OverlayState {
   timer: TimerState;
@@ -99,6 +99,18 @@ function LoginScreen({ onLogin }: { onLogin: () => void }) {
 function AdminInner() {
   const params = useSearchParams();
   const room = params.get("room") || "default";
+
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [authChecked, setAuthChecked] = useState<boolean>(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem(AUTH_TOKEN_KEY);
+    if (!token) { setAuthChecked(true); return; }
+    fetch(`/api/auth?token=${token}`)
+      .then(r => r.json())
+      .then(d => { setIsLoggedIn(!!d.valid); setAuthChecked(true); })
+      .catch(() => setAuthChecked(true));
+  }, []);
 
   const [state, setState] = useState<OverlayState | null>(null);
   const stateRef = useRef<OverlayState | null>(null); // always latest state
