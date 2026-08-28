@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import { useState, useEffect, useCallback, useRef, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 
@@ -161,6 +161,9 @@ function AdminInner() {
 
   const [localSecs, setLocalSecs] = useState(0);
   const localSecsRef = useRef(0); // always latest secs
+
+  const [dragIdx, setDragIdx] = useState<number | null>(null);
+  const [dragOverIdx, setDragOverIdx] = useState<number | null>(null);
 
   const [localRunning, setLocalRunning] = useState(false);
   const localRunningRef = useRef(false);
@@ -340,6 +343,21 @@ function AdminInner() {
     showToast("All donors cleared");
   }, [push]);
 
+  const handleDragStart = useCallback((i: number) => setDragIdx(i), []);
+  const handleDragOver  = useCallback((e: React.DragEvent, i: number) => { e.preventDefault(); setDragOverIdx(i); }, []);
+  const handleDrop      = useCallback((i: number) => {
+    if (dragIdx === null || dragIdx === i) { setDragIdx(null); setDragOverIdx(null); return; }
+    const current = stateRef.current;
+    if (!current) return;
+    const updated = [...current.donors];
+    const [moved] = updated.splice(dragIdx, 1);
+    updated.splice(i, 0, moved);
+    push({ donors: updated });
+    showToast("Order updated!");
+    setDragIdx(null); setDragOverIdx(null);
+  }, [dragIdx, push]);
+  const handleDragEnd   = useCallback(() => { setDragIdx(null); setDragOverIdx(null); }, []);
+
   const toggleVis = useCallback((which: "timer" | "donors" | "amounts", val: boolean) => {
     if (which === "timer") push({ showTimer: val });
     else if (which === "donors") push({ showDonors: val });
@@ -429,7 +447,16 @@ function AdminInner() {
             {state.donors.length === 0
               ? <div className="dai-empty">NO DONATORS YET</div>
               : state.donors.map((d, i) => (
-                  <div key={d.name} className="donor-admin-item">
+                  <div
+                    key={d.name}
+                    className={`donor-admin-item${dragIdx === i ? " dai-dragging" : ""}${dragOverIdx === i && dragIdx !== i ? " dai-drag-over" : ""}`}
+                    draggable
+                    onDragStart={() => handleDragStart(i)}
+                    onDragOver={(e) => handleDragOver(e, i)}
+                    onDrop={() => handleDrop(i)}
+                    onDragEnd={handleDragEnd}
+                  >
+                    <div className="drag-handle" title="Drag to reorder">⠿</div>
                     <div className="dai-rank">{i+1}</div>
                     <div className="dai-name" style={{ color: d.color || "#00d2ff" }}>{d.name}</div>
                     <div className="dai-amt">{d.amount > 0 ? fmtAmt(d.amount) : "-"}</div>

@@ -125,6 +125,11 @@ input[readonly] { cursor:pointer; }
 .dai-del  { background:none; border:none; cursor:pointer; color:rgba(255,77,109,.5); font-size:16px; transition:color .2s; padding:0 4px; }
 .dai-del:hover { color:var(--red); }
 .dai-empty { color:var(--muted); font-family:var(--font-rajdhani),sans-serif; font-size:13px; letter-spacing:2px; text-align:center; padding:20px; }
+.drag-handle { cursor:grab; font-size:18px; color:rgba(148,163,184,0.35); flex-shrink:0; line-height:1; padding:0 2px; transition:color .2s; user-select:none; }
+.drag-handle:hover { color:rgba(0,210,255,0.6); }
+.drag-handle:active { cursor:grabbing; }
+.donor-admin-item.dai-dragging { opacity:0.35; border-color:rgba(0,210,255,0.4); }
+.donor-admin-item.dai-drag-over { border-color:rgba(0,210,255,0.8); background:rgba(0,210,255,0.08); box-shadow:0 0 12px rgba(0,210,255,0.15); }
 .toggle-row { display:flex; align-items:center; justify-content:space-between; padding:12px 0; border-bottom:1px solid rgba(255,255,255,.06); }
 .toggle-row:last-child { border-bottom:none; }
 .toggle-label { font-family:var(--font-rajdhani),sans-serif; font-size:13px; font-weight:600; letter-spacing:1px; }
