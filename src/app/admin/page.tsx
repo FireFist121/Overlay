@@ -398,7 +398,7 @@ function AdminInner() {
 
           <label>ADD TIME</label>
           <div className="presets" style={{ marginBottom: "10px" }}>
-            {[10,20,30,60].map(m => (
+            {[10,20,30,60,120,180,240].map(m => (
               <div key={m} className="preset-btn" onClick={() => addTime(m)}>{m < 60 ? `+${m}min` : `+${m/60}hr`}</div>
             ))}
           </div>
