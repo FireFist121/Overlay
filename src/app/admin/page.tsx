@@ -340,14 +340,7 @@ function AdminInner() {
             <button className="btn btn-cyan" onClick={timerReset} style={{ padding: "0 16px", height: "42px", fontSize: "13px" }}>Set</button>
           </div>
 
-          <label>ADD PRESETS</label>
-          <div className="presets" style={{ marginBottom: "12px" }}>
-            {[10,20,40,60,120,180].map(m => (
-              <div key={m} className="preset-btn" onClick={() => addTime(m)}>{m < 60 ? `${m}min` : `${m/60}hr`}</div>
-            ))}
-          </div>
-
-          <label>Add Custom Time (minutes)</label>
+          <label>Add Time (minutes)</label>
           <div style={{ display: "flex", gap: "8px", marginBottom: "12px" }}>
             <input type="number" value={customAddInput} onChange={e => setCustomAddInput(e.target.value)} placeholder="e.g. 7" min={1} max={999} style={{ flex: 1, margin: 0 }} />
             <button className="btn btn-green" onClick={() => { const v = parseInt(customAddInput||"0"); if(v){ addTime(v); setCustomAddInput(""); } }} style={{ padding: "0 16px", height: "42px", fontSize: "13px" }}>Add</button>
