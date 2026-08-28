@@ -37,7 +37,7 @@ export async function getDb(): Promise<Db> {
   return c.db("overlay");
 }
 
-export interface Donor { name: string; amount: number; }
+export interface Donor { name: string; amount: number; color?: string; }
 export interface TimerState { remaining: number; running: boolean; total: number; targetEndTime?: number; }
 export interface OverlayState {
   timer: TimerState; donors: Donor[];

@@ -48,6 +48,7 @@ function AdminInner() {
   const [customAddInput, setCustomAddInput] = useState("");
   const [donorName, setDonorName] = useState("");
   const [donorAmount, setDonorAmount] = useState("");
+  const [donorColor, setDonorColor] = useState("#00d2ff");
   const [toast, setToast] = useState("");
 
   const tickRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -297,7 +298,7 @@ function AdminInner() {
               : state.donors.map((d, i) => (
                   <div key={d.name} className="donor-admin-item">
                     <div className="dai-rank">{i+1}</div>
-                    <div className="dai-name">{d.name}</div>
+                    <div className="dai-name" style={{ color: d.color || "#00d2ff" }}>{d.name}</div>
                     <div className="dai-amt">{d.amount > 0 ? fmtAmt(d.amount) : "-"}</div>
                     <button className="dai-del" onClick={() => deleteDonor(d.name)}>X</button>
                   </div>
