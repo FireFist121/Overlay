@@ -20,6 +20,16 @@ function fmt(secs: number) {
   return `${pad(h)}:${pad(m)}:${pad(s)}`;
 }
 function fmtAmt(n: number) { return "Rs " + Number(n).toLocaleString("en-IN"); }
+function parseTimeInput(input: string): number {
+  if (!input) return 0;
+  const parts = input.split(':').map(Number);
+  if (parts.some(isNaN)) return 0;
+  if (parts.length === 3) return parts[0] * 3600 + parts[1] * 60 + parts[2];
+  if (parts.length === 2) return parts[0] * 60 + parts[1];
+  if (parts.length === 1) return parts[0] * 60;
+  return 0;
+}
+
 
 function AdminInner() {
   const params = useSearchParams();
@@ -123,9 +133,9 @@ function AdminInner() {
   const timerStart = useCallback(() => {
     const current = stateRef.current;
     if (!current) return;
-    const mins = parseInt(timerInput) || 10;
-    const secs = localSecsRef.current > 0 ? localSecsRef.current : mins * 60;
-    const total = current.timer.total || mins * 60;
+    const totalSecs = parseTimeInput(timerInput) || 600;
+    const secs = localSecsRef.current > 0 ? localSecsRef.current : totalSecs;
+    const total = current.timer.total || totalSecs;
     const targetEndTime = Date.now() + secs * 1000;
     endTimeRef.current = targetEndTime;
     setLocalSecs(secs); localSecsRef.current = secs;
@@ -144,12 +154,12 @@ function AdminInner() {
   }, [push]);
 
   const timerReset = useCallback(() => {
-    const mins = parseInt(timerInput) || 10;
+    const totalSecs = parseTimeInput(timerInput) || 600;
     setLocalRunning(false); localRunningRef.current = false;
-    setLocalSecs(mins * 60); localSecsRef.current = mins * 60;
+    setLocalSecs(totalSecs); localSecsRef.current = totalSecs;
     if (tickRef.current) clearInterval(tickRef.current);
     endTimeRef.current = null;
-    push({ timer: { remaining: mins * 60, running: false, total: mins * 60 } });
+    push({ timer: { remaining: totalSecs, running: false, total: totalSecs } });
     showToast("Timer Reset");
   }, [timerInput, push]);
 
@@ -250,10 +260,10 @@ function AdminInner() {
             <button className="btn btn-cyan" onClick={timerReset} style={{ padding: "0 16px", height: "42px", fontSize: "13px" }}>Set</button>
           </div>
 
-          <label>Quick Presets</label>
+          <label>ADD PRESETS</label>
           <div className="presets" style={{ marginBottom: "12px" }}>
-            {[5,10,15,30,60,90].map(m => (
-              <div key={m} className="preset-btn" onClick={() => setPreset(m)}>{m < 60 ? `${m} min` : `${m/60} hr`}</div>
+            {[10,20,40,60,120,180].map(m => (
+              <div key={m} className="preset-btn" onClick={() => addTime(m)}>{m < 60 ? `${m}min` : `${m/60}hr`}</div>
             ))}
           </div>
 
@@ -263,10 +273,9 @@ function AdminInner() {
             <button className="btn btn-green" onClick={() => { const v = parseInt(customAddInput||"0"); if(v){ addTime(v); setCustomAddInput(""); } }} style={{ padding: "0 16px", height: "42px", fontSize: "13px" }}>Add</button>
           </div>
 
-          <label>Add / Remove Time</label>
+          <label>REMOVE TIME</label>
           <div className="btn-row">
-            {[1,5,10].map(m => <button key={m} className="btn btn-cyan btn-sm" onClick={() => addTime(m)}>+{m}m</button>)}
-            {[1,5].map(m => <button key={m} className="btn btn-red btn-sm" onClick={() => addTime(-m)}>-{m}m</button>)}
+            {[-10,-20,-30,-60].map(m => <button key={m} className="btn btn-red btn-sm" onClick={() => addTime(m)}>{m === -60 ? '-1hr' : `${m}min`}</button>)}
           </div>
         </div>
 
