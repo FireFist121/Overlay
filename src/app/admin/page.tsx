@@ -254,9 +254,9 @@ function AdminInner() {
             <button className="btn btn-red btn-sm" onClick={timerReset}>Reset</button>
           </div>
 
-          <label>Set Time (minutes)</label>
+          <label>SET TIME</label>
           <div style={{ display: "flex", gap: "8px", marginBottom: "12px" }}>
-            <input type="number" value={timerInput} onChange={e => setTimerInput(e.target.value)} min={1} max={999} style={{ flex: 1, margin: 0 }} />
+            <input type="text" value={timerInput} onChange={e => setTimerInput(e.target.value)} placeholder="HH:MM:SS" style={{ flex: 1, margin: 0 }} />
             <button className="btn btn-cyan" onClick={timerReset} style={{ padding: "0 16px", height: "42px", fontSize: "13px" }}>Set</button>
           </div>
 
