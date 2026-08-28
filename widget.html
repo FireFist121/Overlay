@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>OBS Widget</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Orbitron:wght@700;900&family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cyan:    #00d2ff;
+      --cyan2:   #3b82f6;
+      --navy:    #0a1128;
+      --navy2:   #0f172a;
+      --navy3:   #1e293b;
+      --gold:    #ffd700;
+      --white:   #ffffff;
+      --muted:   #94a3b8; /* muted gray-blue */
+    }
+
+    html, body {
+      background: transparent;
+      width: 420px;
+      font-family: 'Inter', sans-serif;
+      overflow: hidden;
+    }
+
+    /* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ TIMER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    #timer-block { margin-bottom: 14px; position: relative; }
+    #timer-block.hidden { display: none; }
+
+    .timer-shell {
+      background: var(--navy);
+      border: 1px solid rgba(0, 210, 255, 0.4);
+      border-radius: 12px;
+      padding: 18px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 0 20px rgba(0, 210, 255, 0.15);
+    }
+    
+    .timer-content { 
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+    }
+
+    .timer-label {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    #timer-display {
+      font-family: 'Orbitron', monospace;
+      font-size: 46px;
+      font-weight: 900;
+      color: var(--white);
+      line-height: 1;
+      text-shadow: 0 0 12px var(--cyan), 0 0 25px rgba(0, 210, 255, 0.6);
+      letter-spacing: 3px;
+    }
+
+    .timer-progress-bg {
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+
+    .timer-progress-bar {
+      height: 100%;
+      width: 100%;
+      background: linear-gradient(90deg, var(--cyan2), var(--cyan));
+      box-shadow: 0 0 10px var(--cyan);
+      transition: width 1s linear;
+    }
+
+    .timer-status-text {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-top: 8px;
+    }
+
+    /* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ DONATOR LIST â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+
+    #donator-block.hidden { display: none; }
+
+    .list-header {
+      background: var(--navy);
+      border: 1px solid rgba(0, 210, 255, 0.3);
+      border-radius: 12px;
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 10px;
+      box-shadow: 0 0 15px rgba(0, 210, 255, 0.1);
+    }
+    .list-header-title {
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 4px;
+      color: var(--cyan);
+      text-transform: uppercase;
+      text-shadow: 0 0 8px var(--cyan);
+    }
+
+    #donators-list { display: flex; flex-direction: column; gap: 8px; }
+
+    .donor-card {
+      --card-accent: var(--gold);
+      background: linear-gradient(135deg, #1f1a00 0%, var(--navy2) 80%);
+      border: 1px solid rgba(255, 215, 0, 0.4);
+      border-radius: 10px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      animation: slideIn 0.5s ease both;
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(-20px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    .donor-card::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 4px;
+      background: var(--card-accent);
+      box-shadow: 0 0 10px var(--card-accent);
+    }
+
+    .donor-rank {
+      font-family: 'Orbitron', monospace;
+      font-size: 15px;
+      font-weight: 900;
+      color: var(--card-accent);
+      text-shadow: 0 0 10px var(--card-accent);
+      width: 24px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .donor-info { flex: 1; min-width: 0; }
+    .donor-name {
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+      color: var(--white);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .donor-sub {
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: var(--muted);
+      text-transform: uppercase;
+      font-family: 'Rajdhani', sans-serif;
+    }
+
+    .donor-amount {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--card-accent);
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-family: 'Orbitron', monospace;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--card-accent) !important;
+      text-shadow: 0 0 8px rgba(var(--card-accent), 0.5);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .donor-amount { color: var(--gold) !important; }
+
+    /* empty state */
+    #empty-state {
+      text-align: center;
+      padding: 30px 20px;
+      color: var(--muted);
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 14px;
+      letter-spacing: 2px;
+    }
+</style>
+</head>
+<body>
+<div id="timer-block" class="hidden">
+  <div class="timer-shell">
+    <div class="timer-icon">Ã¢ÂÂ±</div>
+    <div class="timer-content">
+      <div class="timer-label">Stream Timer</div>
+      <div id="timer-display">00:00:00</div>
+    </div>
+    <div class="status-dot" id="status-dot"></div>
+  </div>
+</div>
+<div id="donator-block" class="hidden">
+  <div class="list-header">
+    <div class="list-header-line"></div>
+    <div class="list-header-title">Top Supporters</div>
+    <div class="list-header-line"></div>
+  </div>
+  <div id="donators-list">
+    <div id="empty-state">NO DONATORS YET</div>
+  </div>
+</div>
+<div id="toast"></div>
+<script>
+const KEY_DONORS='overlay_donors',KEY_TIMER='overlay_timer',KEY_SHOW_T='overlay_show_timer',KEY_SHOW_D='overlay_show_donors';
+let timerState={remaining:0,running:false},timerTick=null,donors=[];
+const urlParams = new URLSearchParams(window.location.search);
+const widgetType = urlParams.get('type');
+function pad(n){return String(n).padStart(2,'0')}
+function formatTime(secs){
+  secs=Math.max(0,secs);
+  const h=Math.floor(secs/3600),m=Math.floor((secs%3600)/60),s=secs%60;
+  return `${pad(h)}:${pad(m)}:${pad(s)}`;
+}
+function formatAmt(n){return 'â‚¹'+Number(n).toLocaleString('en-IN')}
+function renderTimer(){
+  const el=document.getElementById('timer-display'),blk=document.getElementById('timer-block');
+  const prog=document.getElementById('timer-progress'),stat=document.getElementById('timer-status-msg');
+  if(widgetType==='donors'){blk.style.display='none';return;}
+  const showT=localStorage.getItem(KEY_SHOW_T)!=='false';
+  blk.style.display=showT?'block':'none';
+  el.textContent=formatTime(timerState.remaining);
+  
+  if(timerState.remaining<=0){
+    prog.style.width='0%';
+    stat.textContent='WAITING FOR EVENTS...';
+  } else if(!timerState.running){
+    stat.textContent='PAUSED';
+  } else {
+    stat.textContent='IN PROGRESS';
+    // Calculate progress if we had a total time, but we don't store total reliably.
+    // Let's just simulate a simple progress or keep it full.
+    // For now, if running, keep it 100% or calculate based on an arbitrary max.
+    // We will just leave width as is or 100%.
+    prog.style.width='100%'; 
+  }
+}
+
+function renderDonors(){
+  const blk=document.getElementById('donator-block'),list=document.getElementById('donators-list');
+  if(widgetType==='timer'){blk.style.display='none';return;}
+  const showD=localStorage.getItem(KEY_SHOW_D)!=='false';
+  blk.style.display=showD?'block':'none';
+  if(!donors||donors.length===0){list.innerHTML='<div id="empty-state">NO DONATORS YET</div>';return;}
+  list.innerHTML='';
+  donors.slice(0,5).forEach((d,i)=>{
+    const rank=i+1,card=document.createElement('div');
+    card.className='donor-card';card.dataset.rank=rank;card.style.animationDelay=(i*.07)+'s';
+    card.innerHTML=`
+      <div class="donor-rank">#${rank}</div>
+      <div class="donor-info"><div class="donor-name">${d.name}</div><div class="donor-sub">DONATION</div></div>
+      <div class="donor-amount">${formatAmt(d.amount)}</div>`;
+    list.appendChild(card);
+  });
+}
+function startTick(){
+  if(timerTick)return;
+  timerTick=setInterval(()=>{
+    if(!timerState.running||timerState.remaining<=0)return;
+    timerState.remaining--;
+    if(timerState.remaining<=0){timerState.running=false;clearInterval(timerTick);timerTick=null;}
+    renderTimer();
+  },1000);
+}
+function stopTick(){clearInterval(timerTick);timerTick=null;}
+function syncAll(){
+  try{donors=JSON.parse(localStorage.getItem(KEY_DONORS)||'[]');}catch{donors=[];}
+  try{
+    const ts=JSON.parse(localStorage.getItem(KEY_TIMER)||'null');
+    if(ts){const wr=timerState.running;timerState=ts;if(ts.running&&!wr)startTick();if(!ts.running)stopTick();}
+  }catch{}
+  renderTimer();renderDonors();
+}
+const bc=new BroadcastChannel('overlay_channel');
+bc.onmessage=(e)=>{if(e.data.type==='update')syncAll();if(e.data.type==='toast')showToast(e.data.msg);};
+function showToast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2800);}
+syncAll();
+setInterval(syncAll,2000);
+</script>
+</body>
+</html>
+
+
+
