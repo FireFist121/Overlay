@@ -104,7 +104,7 @@ function WidgetInner() {
                 <div className="donor-rank">#{i + 1}</div>
                 <div className="donor-info">
                   <div className="donor-name">{d.name}</div>
-                  <div className="donor-sub">DONATION</div>
+                  
                 </div>
                 {(state.showAmounts ?? true) && d.amount > 0 && (<div className={`donor-amount rank-${i + 1}`}>{formatAmt(d.amount)}</div>)}
               </div>
