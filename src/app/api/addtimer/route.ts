@@ -1,5 +1,5 @@
 ﻿import { NextRequest, NextResponse } from "next/server";
-import { getDb } from "@/lib/db";
+import { getDb, getDefaultState } from "@/lib/db";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -17,12 +17,19 @@ export async function GET(req: NextRequest) {
   try {
     const db  = await getDb();
     const col = db.collection("states");
-    const doc = await col.findOne({ room });
-    if (!doc) return NextResponse.json({ error: "Room not found" }, { status: 404 });
+    let doc = await col.findOne({ room });
 
+    // Auto-create room if it doesn't exist yet
+    if (!doc) {
+      const def = getDefaultState();
+      await col.updateOne({ room }, { $set: { room, state: def, updatedAt: def.updatedAt } }, { upsert: true });
+      doc = await col.findOne({ room });
+    }
+
+    const state = doc?.state || getDefaultState();
     const addSecs    = minutes * 60;
     const now        = Date.now();
-    const timer      = doc.timer || {};
+    const timer      = state.timer || {};
     const newRemaining = Math.max(0, (timer.remaining || 0) + addSecs);
 
     let targetEndTime: number | undefined;
@@ -30,21 +37,19 @@ export async function GET(req: NextRequest) {
       targetEndTime = Math.max(now, timer.targetEndTime + addSecs * 1000);
     }
 
-    const updatedTimer = {
-      ...timer,
-      remaining: newRemaining,
-      ...(targetEndTime ? { targetEndTime } : {}),
-    };
+    const updatedTimer = { ...timer, remaining: newRemaining, ...(targetEndTime ? { targetEndTime } : {}) };
+    const updatedState = { ...state, timer: updatedTimer, updatedAt: now };
 
     await col.updateOne(
       { room },
-      { $set: { timer: updatedTimer, updatedAt: now } },
+      { $set: { room, state: updatedState, updatedAt: now } },
       { upsert: true }
     );
 
     const action = minutes > 0 ? `+${minutes}m` : `${minutes}m`;
     return NextResponse.json({ ok: true, action, newRemaining });
-  } catch {
+  } catch (e) {
+    console.error("addtimer error:", e);
     return NextResponse.json({ error: "DB error" }, { status: 500 });
   }
 }
