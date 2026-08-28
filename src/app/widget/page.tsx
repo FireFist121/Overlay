@@ -87,7 +87,7 @@ function WidgetInner() {
           <div className="timer-pill">
             <div className={`timer-display-new${urgent ? " urgent" : ""}`}>{formatTime(localSecs)}</div>
           </div>
-          <div className="timer-label-new">⚡ MARATHON ⚡</div>
+          <div className="timer-promo-text"><div>UPI: <span className="promo-gold">pitajiplayz@ibl</span></div><div>₹3K UPI = <span className="promo-gold">+1 HR</span></div></div>
         </div>
       )}
       {showDonors && (
