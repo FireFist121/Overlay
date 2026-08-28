@@ -274,8 +274,10 @@ function AdminInner() {
           </div>
 
           <label>REMOVE TIME</label>
-          <div className="btn-row">
-            {[-10,-20,-30,-60].map(m => <button key={m} className="btn btn-red btn-sm" onClick={() => addTime(m)}>{m === -60 ? '-1hr' : `${m}min`}</button>)}
+          <div className="presets" style={{ marginBottom: "12px" }}>
+            {[-10,-20,-30,-60].map(m => (
+              <div key={m} className="preset-btn-red" onClick={() => addTime(m)}>{m === -60 ? '-1hr' : `${m}min`}</div>
+            ))}
           </div>
         </div>
 

@@ -114,6 +114,8 @@ input[readonly] { cursor:pointer; }
 .presets { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
 .preset-btn { padding:6px 12px; background:rgba(0,210,255,.06); border:1px solid rgba(0,210,255,.2); border-radius:8px; color:var(--muted); font-family:var(--font-rajdhani),sans-serif; font-size:12px; font-weight:600; cursor:pointer; transition:all .2s; letter-spacing:1px; }
 .preset-btn:hover { background:rgba(0,210,255,.15); color:var(--cyan); border-color:rgba(0,210,255,.4); }
+.preset-btn-red { padding:6px 12px; background:rgba(255,50,50,.06); border:1px solid rgba(255,50,50,.2); border-radius:8px; color:var(--muted); font-family:var(--font-rajdhani),sans-serif; font-size:12px; font-weight:600; cursor:pointer; transition:all .2s; letter-spacing:1px; }
+.preset-btn-red:hover { background:rgba(255,50,50,.15); color:#ff4444; border-color:rgba(255,50,50,.4); }
 .donor-admin-list { display:flex; flex-direction:column; gap:6px; max-height:280px; overflow-y:auto; margin-top:12px; }
 .donor-admin-list::-webkit-scrollbar { width:4px; }
 .donor-admin-list::-webkit-scrollbar-thumb { background:rgba(0,210,255,.3); border-radius:2px; }
