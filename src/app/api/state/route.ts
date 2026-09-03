@@ -1,6 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getState, saveState, OverlayState, saveLog } from "@/lib/db";
 
+function fmt(secs: number) {
+  secs = Math.max(0, secs);
+  const h = Math.floor(secs / 3600), m = Math.floor((secs % 3600) / 60), s = secs % 60;
+  return `${h > 0 ? String(h).padStart(2, "0") + ":" : ""}${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+}
+
 export async function GET(req: NextRequest) {
   const room = req.nextUrl.searchParams.get("room") || "default";
   const state = await getState(room);
@@ -31,20 +37,25 @@ export async function POST(req: NextRequest) {
 
   // Detect Reset
   if (body.timer.remaining === body.timer.total && body.timer.total > 0 && oldState.timer.remaining !== body.timer.remaining) {
-    logsToSave.push({ action: "Timer Reset", details: `Reset to ${Math.floor(body.timer.total / 60)} minutes` });
+    logsToSave.push({ action: "Timer Reset", details: `Reset to ${fmt(body.timer.total)} (was ${fmt(oldState.timer.remaining)})` });
   } else {
     // Detect Added/Removed Time
     let timeDiff = 0;
+    let oldSecs = oldState.timer.remaining;
+    let newSecs = body.timer.remaining;
+
     if (body.timer.running && oldState.timer.running && body.timer.targetEndTime && oldState.timer.targetEndTime) {
       timeDiff = Math.round((body.timer.targetEndTime - oldState.timer.targetEndTime) / 1000);
+      oldSecs = Math.max(0, Math.round((oldState.timer.targetEndTime - Date.now()) / 1000));
+      newSecs = Math.max(0, Math.round((body.timer.targetEndTime - Date.now()) / 1000));
     } else if (!body.timer.running && !oldState.timer.running) {
       timeDiff = body.timer.remaining - oldState.timer.remaining;
     }
 
     if (timeDiff > 0) {
-      logsToSave.push({ action: "Timer Added", details: `Added ${Math.abs(timeDiff)} seconds` });
+      logsToSave.push({ action: "Timer Added", details: `Added ${Math.abs(timeDiff)} sec (${fmt(oldSecs)} -> ${fmt(newSecs)})` });
     } else if (timeDiff < 0) {
-      logsToSave.push({ action: "Timer Reduced", details: `Removed ${Math.abs(timeDiff)} seconds` });
+      logsToSave.push({ action: "Timer Reduced", details: `Removed ${Math.abs(timeDiff)} sec (${fmt(oldSecs)} -> ${fmt(newSecs)})` });
     }
   }
 
