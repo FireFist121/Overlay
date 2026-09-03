@@ -23,18 +23,29 @@ export async function POST(req: NextRequest) {
   const logsToSave = [];
   
   // Timer changes
-  if (oldState.timer.remaining !== body.timer.remaining && !oldState.timer.running && !body.timer.running) {
-    const diff = body.timer.remaining - oldState.timer.remaining;
-    if (diff > 0) {
-      logsToSave.push({ action: "Timer Added", details: `Added ${diff} seconds` });
-    } else if (diff < 0) {
-      logsToSave.push({ action: "Timer Reduced", details: `Removed ${Math.abs(diff)} seconds` });
-    }
+  if (!oldState.timer.running && body.timer.running) {
+    logsToSave.push({ action: "Timer Started", details: `Timer resumed/started` });
+  } else if (oldState.timer.running && !body.timer.running) {
+    logsToSave.push({ action: "Timer Paused", details: `Timer paused` });
   }
 
-  // Timer run state
-  if (oldState.timer.running !== body.timer.running) {
-    logsToSave.push({ action: "Timer Toggled", details: body.timer.running ? "Timer started" : "Timer paused" });
+  // Detect Reset
+  if (body.timer.remaining === body.timer.total && body.timer.total > 0 && oldState.timer.remaining !== body.timer.remaining) {
+    logsToSave.push({ action: "Timer Reset", details: `Reset to ${Math.floor(body.timer.total / 60)} minutes` });
+  } else {
+    // Detect Added/Removed Time
+    let timeDiff = 0;
+    if (body.timer.running && oldState.timer.running && body.timer.targetEndTime && oldState.timer.targetEndTime) {
+      timeDiff = Math.round((body.timer.targetEndTime - oldState.timer.targetEndTime) / 1000);
+    } else if (!body.timer.running && !oldState.timer.running) {
+      timeDiff = body.timer.remaining - oldState.timer.remaining;
+    }
+
+    if (timeDiff > 0) {
+      logsToSave.push({ action: "Timer Added", details: `Added ${Math.abs(timeDiff)} seconds` });
+    } else if (timeDiff < 0) {
+      logsToSave.push({ action: "Timer Reduced", details: `Removed ${Math.abs(timeDiff)} seconds` });
+    }
   }
 
   // Donor changes

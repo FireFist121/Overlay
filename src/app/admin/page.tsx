@@ -229,7 +229,7 @@ function AdminInner() {
       document.cookie = `admin_token=${token}; path=/; max-age=3600`;
       
       setLogsLoading(true);
-      const res = await fetch(`/api/logs?room=${room}&limit=50`);
+      const res = await fetch(`/api/logs?room=${room}&limit=200`);
       const data = await res.json();
       if (Array.isArray(data)) {
         setLogs(data);
@@ -552,16 +552,33 @@ function AdminInner() {
             {logs.length === 0 ? (
               <div style={{ padding: "20px", textAlign: "center", color: "rgba(255,255,255,0.3)", fontSize: "12px", fontFamily: "var(--font-rajdhani), sans-serif", letterSpacing: "1px" }}>NO LOGS FOUND</div>
             ) : (
-              logs.map((log, i) => (
-                <div key={log._id || i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px", borderBottom: i === logs.length - 1 ? "none" : "1px solid rgba(255,255,255,0.05)" }}>
-                  <div>
-                    <div style={{ fontSize: "13px", fontWeight: "bold", color: "#fff", marginBottom: "2px" }}>{log.action}</div>
-                    <div style={{ fontSize: "11px", color: "rgba(255,255,255,0.6)" }}>{log.details}</div>
+              Object.entries(
+                logs.reduce((acc, log) => {
+                  const d = new Date(log.timestamp);
+                  const dateStr = d.toLocaleDateString();
+                  const today = new Date().toLocaleDateString();
+                  const yesterday = new Date(Date.now() - 86400000).toLocaleDateString();
+                  const key = dateStr === today ? "Today" : dateStr === yesterday ? "Yesterday" : dateStr;
+                  if (!acc[key]) acc[key] = [];
+                  acc[key].push(log);
+                  return acc;
+                }, {} as Record<string, LogEntry[]>)
+              ).map(([dateLabel, dayLogs]) => (
+                <div key={dateLabel} style={{ marginBottom: "16px" }}>
+                  <div style={{ fontSize: "11px", fontWeight: 700, color: "var(--cyan)", letterSpacing: "2px", textTransform: "uppercase", padding: "4px 8px", background: "rgba(0,210,255,0.05)", borderRadius: "4px", marginBottom: "8px" }}>
+                    {dateLabel}
                   </div>
-                  <div style={{ fontSize: "10px", color: "rgba(0,210,255,0.7)", textAlign: "right" }}>
-                    <div>{new Date(log.timestamp).toLocaleDateString()}</div>
-                    <div>{new Date(log.timestamp).toLocaleTimeString()}</div>
-                  </div>
+                  {dayLogs.map((log, i) => (
+                    <div key={log._id || i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 10px", borderBottom: i === dayLogs.length - 1 ? "none" : "1px solid rgba(255,255,255,0.05)" }}>
+                      <div>
+                        <div style={{ fontSize: "13px", fontWeight: "bold", color: "#fff", marginBottom: "2px" }}>{log.action}</div>
+                        <div style={{ fontSize: "11px", color: "rgba(255,255,255,0.6)" }}>{log.details}</div>
+                      </div>
+                      <div style={{ fontSize: "10px", color: "rgba(0,210,255,0.7)", textAlign: "right" }}>
+                        <div>{new Date(log.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               ))
             )}
