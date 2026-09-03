@@ -1,5 +1,5 @@
-﻿import { NextRequest, NextResponse } from "next/server";
-import { getDb } from "@/lib/db";
+import { NextRequest, NextResponse } from "next/server";
+import { getDb, saveLog } from "@/lib/db";
 import { randomBytes } from "crypto";
 
 const EMAIL = "FIREFIST@MAIL.COM";
@@ -14,6 +14,9 @@ export async function POST(req: NextRequest) {
     const token = randomBytes(32).toString("hex");
     const db = await getDb();
     await db.collection("sessions").insertOne({ token, createdAt: new Date(), active: true });
+
+    // Assuming "default" room for login
+    await saveLog("default", "Admin Login", `User ${email} logged in`);
 
     return NextResponse.json({ token });
   } catch {

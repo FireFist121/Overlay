@@ -1,4 +1,4 @@
-﻿import { MongoClient, Db, ServerApiVersion } from "mongodb";
+import { MongoClient, Db, ServerApiVersion } from "mongodb";
 
 const rawUri = (process.env.MONGODB_URI || "").replace(/^\"|\"$/g, "").trim();
 // Ensure the URI has the database + required params
@@ -44,6 +44,13 @@ export interface OverlayState {
   showTimer: boolean; showDonors: boolean; showAmounts: boolean; updatedAt: number;
 }
 
+export interface LogEntry {
+  room: string;
+  action: string;
+  details: string;
+  timestamp: number;
+}
+
 export function getDefaultState(): OverlayState {
   return {
     timer: { remaining: 600, running: false, total: 600 },
@@ -68,4 +75,32 @@ export async function saveState(room: string, state: OverlayState): Promise<void
       { upsert: true }
     );
   } catch (e) { console.error("MongoDB saveState error:", e); }
+}
+
+export async function saveLog(room: string, action: string, details: string): Promise<void> {
+  try {
+    const db = await getDb();
+    await db.collection<LogEntry>("logs").insertOne({
+      room,
+      action,
+      details,
+      timestamp: Date.now(),
+    });
+  } catch (e) {
+    console.error("MongoDB saveLog error:", e);
+  }
+}
+
+export async function getLogs(room: string, limit: number = 100): Promise<LogEntry[]> {
+  try {
+    const db = await getDb();
+    return await db.collection<LogEntry>("logs")
+      .find({ room })
+      .sort({ timestamp: -1 })
+      .limit(limit)
+      .toArray();
+  } catch (e) {
+    console.error("MongoDB getLogs error:", e);
+    return [];
+  }
 }

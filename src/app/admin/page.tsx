@@ -12,6 +12,13 @@ interface OverlayState {
   showAmounts: boolean;
   updatedAt: number;
 }
+interface LogEntry {
+  _id?: string;
+  room: string;
+  action: string;
+  details: string;
+  timestamp: number;
+}
 
 function pad(n: number) { return String(n).padStart(2, "0"); }
 function fmt(secs: number) {
@@ -159,6 +166,9 @@ function AdminInner() {
   const [state, setState] = useState<OverlayState | null>(null);
   const stateRef = useRef<OverlayState | null>(null); // always latest state
 
+  const [logs, setLogs] = useState<LogEntry[]>([]);
+  const [logsLoading, setLogsLoading] = useState(false);
+
   const [localSecs, setLocalSecs] = useState(0);
   const localSecsRef = useRef(0); // always latest secs
 
@@ -212,11 +222,28 @@ function AdminInner() {
     } catch {}
   }, [room]);
 
+  const fetchLogs = useCallback(async () => {
+    try {
+      const token = localStorage.getItem(AUTH_TOKEN_KEY);
+      if (!token) return;
+      document.cookie = `admin_token=${token}; path=/; max-age=3600`;
+      
+      setLogsLoading(true);
+      const res = await fetch(`/api/logs?room=${room}&limit=50`);
+      const data = await res.json();
+      if (Array.isArray(data)) {
+        setLogs(data);
+      }
+    } catch {}
+    finally { setLogsLoading(false); }
+  }, [room]);
+
   useEffect(() => {
     fetchState();
+    fetchLogs();
     const id = setInterval(fetchState, 2000);
     return () => clearInterval(id);
-  }, [fetchState]);
+  }, [fetchState, fetchLogs]);
 
   // ── LOCAL TICK ─────────────────────────────────────────────────────────────
   useEffect(() => {
@@ -511,6 +538,34 @@ function AdminInner() {
               <button className={`btn ${cls}`} onClick={() => copyLink(link)}>Copy</button>
             </div>
           ))}
+        </div>
+
+        {/* LOGS */}
+        <div className="card full-card">
+          <div className="card-title" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <span><span style={{ color: "var(--cyan)" }}>Logs</span> Activity Log</span>
+            <button className="btn btn-cyan btn-sm" onClick={fetchLogs} disabled={logsLoading} style={{ fontSize: "11px", padding: "4px 8px", height: "auto" }}>
+              {logsLoading ? "..." : "Refresh"}
+            </button>
+          </div>
+          <div style={{ maxHeight: "300px", overflowY: "auto", background: "rgba(0,0,0,0.2)", borderRadius: "8px", padding: "8px", border: "1px solid rgba(255,255,255,0.05)" }}>
+            {logs.length === 0 ? (
+              <div style={{ padding: "20px", textAlign: "center", color: "rgba(255,255,255,0.3)", fontSize: "12px", fontFamily: "var(--font-rajdhani), sans-serif", letterSpacing: "1px" }}>NO LOGS FOUND</div>
+            ) : (
+              logs.map((log, i) => (
+                <div key={log._id || i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px", borderBottom: i === logs.length - 1 ? "none" : "1px solid rgba(255,255,255,0.05)" }}>
+                  <div>
+                    <div style={{ fontSize: "13px", fontWeight: "bold", color: "#fff", marginBottom: "2px" }}>{log.action}</div>
+                    <div style={{ fontSize: "11px", color: "rgba(255,255,255,0.6)" }}>{log.details}</div>
+                  </div>
+                  <div style={{ fontSize: "10px", color: "rgba(0,210,255,0.7)", textAlign: "right" }}>
+                    <div>{new Date(log.timestamp).toLocaleDateString()}</div>
+                    <div>{new Date(log.timestamp).toLocaleTimeString()}</div>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
         </div>
       </div>
 
