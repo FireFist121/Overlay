@@ -30,9 +30,9 @@ export async function POST(req: NextRequest) {
   
   // Timer changes
   if (!oldState.timer.running && body.timer.running) {
-    logsToSave.push({ action: "Timer Started", details: `Timer resumed/started` });
+    logsToSave.push({ action: "Timer Started", details: `Timer resumed at ${fmt(body.timer.remaining)}` });
   } else if (oldState.timer.running && !body.timer.running) {
-    logsToSave.push({ action: "Timer Paused", details: `Timer paused` });
+    logsToSave.push({ action: "Timer Paused", details: `Timer paused at ${fmt(body.timer.remaining)}` });
   }
 
   // Detect Reset
