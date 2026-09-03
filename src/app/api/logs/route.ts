@@ -1,13 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getLogs } from "@/lib/db";
+import { getLogs, getDb } from "@/lib/db";
 import { cookies } from "next/headers";
 
 export async function GET(req: NextRequest) {
   const cookieStore = await cookies();
   const token = cookieStore.get("admin_token");
-  const validToken = process.env.ADMIN_TOKEN || "secret_admin_token_123";
+  if (!token || !token.value) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
-  if (!token || token.value !== validToken) {
+  const db = await getDb();
+  const session = await db.collection("sessions").findOne({ token: token.value, active: true });
+  
+  if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
