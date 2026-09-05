@@ -103,7 +103,7 @@ function WidgetInner() {
   const urgent     = localSecs <= 30 && localRunning;
 
   return (
-    <div style={{ background: "transparent", width: 420, fontFamily: "Inter, sans-serif", overflow: "hidden" }}>
+    <div style={{ background: "transparent", width: "fit-content", minWidth: 0, fontFamily: "Inter, sans-serif", overflow: "visible" }}>
       {showTimer && (
         <div className="timer-block">
           <div className="timer-pill">
