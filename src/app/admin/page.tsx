@@ -550,7 +550,7 @@ function AdminInner() {
                 <iframe
                   key={room}
                   src={`/widget?room=${room}&type=timer`}
-                  style={{ width: 440, height: 160, border: "none", background: "transparent", display: "block" }}
+                  style={{ width: 440, height: 230, border: "none", background: "transparent", display: "block" }}
                   scrolling="no"
                 />
               </div>
