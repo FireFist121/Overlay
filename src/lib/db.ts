@@ -42,6 +42,7 @@ export interface TimerState { remaining: number; running: boolean; total: number
 export interface OverlayState {
   timer: TimerState; donors: Donor[];
   showTimer: boolean; showDonors: boolean; showAmounts: boolean; updatedAt: number;
+  _action?: string;
 }
 
 export interface LogEntry {

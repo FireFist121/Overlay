@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
   }
 
   // Detect Reset
-  if (body.timer.remaining === body.timer.total && body.timer.total > 0 && oldState.timer.remaining !== body.timer.remaining) {
+  if (body._action === "RESET") {
     logsToSave.push({ action: "Timer Reset", details: `Reset to ${fmt(body.timer.total)} (was ${fmt(oldState.timer.remaining)})` });
   } else {
     // Detect Added/Removed Time
@@ -49,6 +49,12 @@ export async function POST(req: NextRequest) {
       oldSecs = Math.max(0, Math.round((oldState.timer.targetEndTime - Date.now()) / 1000));
       newSecs = Math.max(0, Math.round((body.timer.targetEndTime - Date.now()) / 1000));
     } else if (!body.timer.running && !oldState.timer.running) {
+      timeDiff = body.timer.remaining - oldState.timer.remaining;
+    } else if (body.timer.running && !oldState.timer.running) {
+      // just started, diff is based on remaining
+      timeDiff = body.timer.remaining - oldState.timer.remaining;
+    } else if (!body.timer.running && oldState.timer.running) {
+       // just paused
       timeDiff = body.timer.remaining - oldState.timer.remaining;
     }
 

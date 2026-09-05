@@ -11,6 +11,7 @@ interface OverlayState {
   showDonors: boolean;
   showAmounts: boolean;
   updatedAt: number;
+  _action?: string;
 }
 interface LogEntry {
   _id?: string;
@@ -311,7 +312,7 @@ function AdminInner() {
     setLocalSecs(totalSecs); localSecsRef.current = totalSecs;
     if (tickRef.current) clearInterval(tickRef.current);
     endTimeRef.current = null;
-    push({ timer: { remaining: totalSecs, running: false, total: totalSecs } });
+    push({ timer: { remaining: totalSecs, running: false, total: totalSecs }, _action: "RESET" });
     showToast("Timer Reset");
   }, [timerInput, push]);
 
@@ -321,7 +322,7 @@ function AdminInner() {
     setLocalRunning(false); localRunningRef.current = false;
     if (tickRef.current) clearInterval(tickRef.current);
     endTimeRef.current = null;
-    push({ timer: { remaining: m * 60, running: false, total: m * 60 } });
+    push({ timer: { remaining: m * 60, running: false, total: m * 60 }, _action: "RESET" });
     showToast(`Set to ${m} min`);
   }, [push]);
 
