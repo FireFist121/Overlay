@@ -25,6 +25,23 @@ function formatTime(secs: number) {
 }
 function formatAmt(n: number) { return "₹" + Number(n).toLocaleString("en-IN"); }
 
+// Maps a font name (from promoStyle.font) to a CSS font-family string using next/font CSS vars
+const FONT_MAP: Record<string, string> = {
+  "Orbitron":       "var(--font-orbitron), 'Orbitron', monospace",
+  "Rajdhani":       "var(--font-rajdhani), 'Rajdhani', sans-serif",
+  "Inter":          "var(--font-inter), 'Inter', sans-serif",
+  "Exo 2":          "var(--font-exo2), 'Exo 2', sans-serif",
+  "Bebas Neue":     "var(--font-bebas), 'Bebas Neue', sans-serif",
+  "Press Start 2P": "var(--font-pressstart), 'Press Start 2P', monospace",
+  "Montserrat":     "var(--font-montserrat), 'Montserrat', sans-serif",
+  "Russo One":      "var(--font-russo), 'Russo One', sans-serif",
+  "Audiowide":      "var(--font-audiowide), 'Audiowide', sans-serif",
+  "Chakra Petch":   "var(--font-chakra), 'Chakra Petch', sans-serif",
+};
+function getFontCss(font: string): string {
+  return FONT_MAP[font] ?? `'${font}', sans-serif`;
+}
+
 function WidgetInner() {
   const params = useSearchParams();
   const room = params.get("room") || "default";
@@ -96,14 +113,7 @@ function WidgetInner() {
             <div className="timer-promo-dynamic">
               {state.promoSegments.map((line, li) => {
                 const style = state.promoStyle;
-                const font = style?.font || "Rajdhani";
-                const cssFont = font === "Orbitron"
-                  ? `var(--font-orbitron), ${font}, monospace`
-                  : font === "Inter"
-                  ? `var(--font-inter), ${font}, sans-serif`
-                  : font === "Rajdhani"
-                  ? `var(--font-rajdhani), ${font}, sans-serif`
-                  : `${font}, sans-serif`;
+                const cssFont = getFontCss(style?.font || "Rajdhani");
                 return (
                   <div key={li} style={{ display: "flex", gap: 6, alignItems: "baseline", justifyContent: "center", flexWrap: "wrap" }}>
                     {line.map((seg, wi) => (
@@ -112,9 +122,9 @@ function WidgetInner() {
                         fontSize: style?.size ?? 24,
                         fontWeight: 700,
                         color: seg.color,
-                        textShadow: style
+                        textShadow: style && style.glowStrength > 0
                           ? `0 0 ${style.glowStrength}px ${style.glowColor}, 0 0 ${style.glowStrength * 2}px ${style.glowColor}`
-                          : `0 0 8px ${seg.color}`,
+                          : "none",
                         letterSpacing: 2,
                         lineHeight: 1.4,
                         whiteSpace: "nowrap",
@@ -128,20 +138,13 @@ function WidgetInner() {
             <div className="timer-promo-dynamic">
               {state.promoText.split("\n").map((line, i) => {
                 const style = state.promoStyle;
-                const font = style?.font || "Rajdhani";
-                const cssFont = font === "Orbitron"
-                  ? `var(--font-orbitron), ${font}, monospace`
-                  : font === "Inter"
-                  ? `var(--font-inter), ${font}, sans-serif`
-                  : font === "Rajdhani"
-                  ? `var(--font-rajdhani), ${font}, sans-serif`
-                  : `${font}, sans-serif`;
+                const cssFont = getFontCss(style?.font || "Rajdhani");
                 return (
                   <div key={i} style={{
                     fontFamily: cssFont,
                     fontSize: style?.size ?? 24,
                     color: style?.color ?? "#ffffff",
-                    textShadow: style ? `0 0 ${style.glowStrength}px ${style.glowColor}, 0 0 ${style.glowStrength * 2}px ${style.glowColor}` : "0 0 8px rgba(255,255,255,0.5)",
+                    textShadow: style && style.glowStrength > 0 ? `0 0 ${style.glowStrength}px ${style.glowColor}, 0 0 ${style.glowStrength * 2}px ${style.glowColor}` : "none",
                     fontWeight: 700,
                     letterSpacing: 2,
                     lineHeight: 1.5,

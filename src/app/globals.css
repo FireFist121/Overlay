@@ -15,41 +15,55 @@
   --bg:    #07111f;
   --card:  #0c1a2e;
   --border: rgba(0,210,255,.18);
+
+  /* Extended font CSS variables */
+  --ff-orbitron:    var(--font-orbitron), 'Orbitron', monospace;
+  --ff-rajdhani:    var(--font-rajdhani), 'Rajdhani', sans-serif;
+  --ff-inter:       var(--font-inter), 'Inter', sans-serif;
+  --ff-exo2:        var(--font-exo2), 'Exo 2', sans-serif;
+  --ff-bebas:       var(--font-bebas), 'Bebas Neue', sans-serif;
+  --ff-pressstart:  var(--font-pressstart), 'Press Start 2P', monospace;
+  --ff-montserrat:  var(--font-montserrat), 'Montserrat', sans-serif;
+  --ff-russo:       var(--font-russo), 'Russo One', sans-serif;
+  --ff-audiowide:   var(--font-audiowide), 'Audiowide', sans-serif;
+  --ff-chakra:      var(--font-chakra), 'Chakra Petch', sans-serif;
 }
 
 html, body { background: transparent; color: var(--white); font-family: var(--font-inter), sans-serif; }
 
-.timer-block { margin-bottom: 14px; }
-.timer-pill {
-  background: var(--navy);
-  border: 1px solid rgba(0, 210, 255, 0.4);
-  border-radius: 50px;
-  padding: 12px 32px;
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  box-shadow: 0 0 8px rgba(0, 210, 255, 0.08), inset 0 0 6px rgba(0, 210, 255, 0.03);
-  margin-bottom: 8px;
-  backdrop-filter: blur(4px);
-}
 .timer-block {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 24px;
+  margin-bottom: 18px;
+}
+.timer-pill {
+  background: #0d1b2e;
+  border: 2px solid rgba(0, 210, 255, 0.55);
+  border-radius: 60px;
+  padding: 14px 44px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow:
+    0 0 20px rgba(0, 210, 255, 0.18),
+    0 0 60px rgba(0, 210, 255, 0.06),
+    inset 0 0 20px rgba(0, 210, 255, 0.04);
+  margin-bottom: 14px;
+  backdrop-filter: blur(6px);
 }
 .timer-display-new {
   font-family: var(--font-orbitron), monospace;
-  font-size: 42px;
+  font-size: 52px;
   font-weight: 900;
   color: var(--white);
-  letter-spacing: 4px;
-  text-shadow: 0 0 6px rgba(0, 210, 255, 0.35);
+  letter-spacing: 6px;
+  text-shadow: 0 0 8px rgba(0, 210, 255, 0.4);
   line-height: 1;
 }
 .timer-display-new.urgent {
   color: var(--red);
-  text-shadow: 0 0 12px var(--red);
+  text-shadow: 0 0 14px var(--red), 0 0 30px rgba(255,77,109,0.4);
   animation: blink 0.5s ease-in-out infinite;
 }
 .timer-label-new {

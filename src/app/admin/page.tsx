@@ -589,7 +589,18 @@ function AdminInner() {
                       >
                         {/* Word preview */}
                         <span style={{
-                          fontFamily: `var(--font-${promoStyle.font === "Orbitron" ? "orbitron" : promoStyle.font === "Inter" ? "inter" : "rajdhani"}), ${promoStyle.font}, sans-serif`,
+                           fontFamily: ({
+                              "Orbitron": "var(--font-orbitron),'Orbitron',monospace",
+                              "Rajdhani": "var(--font-rajdhani),'Rajdhani',sans-serif",
+                              "Inter": "var(--font-inter),'Inter',sans-serif",
+                              "Exo 2": "var(--font-exo2),'Exo 2',sans-serif",
+                              "Bebas Neue": "var(--font-bebas),'Bebas Neue',sans-serif",
+                              "Press Start 2P": "var(--font-pressstart),'Press Start 2P',monospace",
+                              "Montserrat": "var(--font-montserrat),'Montserrat',sans-serif",
+                              "Russo One": "var(--font-russo),'Russo One',sans-serif",
+                              "Audiowide": "var(--font-audiowide),'Audiowide',sans-serif",
+                              "Chakra Petch": "var(--font-chakra),'Chakra Petch',sans-serif",
+                            } as Record<string,string>)[promoStyle.font] ?? `'${promoStyle.font}',sans-serif`,
                           fontSize: Math.max(14, promoStyle.size * 0.6),
                           fontWeight: 700,
                           color: seg.color,
@@ -628,15 +639,84 @@ function AdminInner() {
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
             <div>
               <label>FONT</label>
+              {/* Font Selector Dropdown */}
               <select
                 value={promoStyle.font}
                 onChange={e => setPromoStyle(s => ({ ...s, font: e.target.value }))}
-                style={{ width: "100%", padding: "10px 14px", background: "rgba(0,210,255,.05)", border: "1px solid rgba(0,210,255,.25)", borderRadius: 10, color: "#fff", fontSize: 14, outline: "none", cursor: "pointer" }}
+                style={{ width: "100%", padding: "10px 14px", background: "rgba(0,210,255,.05)", border: "1px solid rgba(0,210,255,.25)", borderRadius: 10, color: "#fff", fontSize: 14, outline: "none", cursor: "pointer", marginBottom: 12 }}
               >
-                {["Rajdhani", "Orbitron", "Inter", "Arial", "Georgia", "Impact", "Courier New", "Trebuchet MS"].map(f => (
+                {[
+                  "Rajdhani", "Orbitron", "Inter",
+                  "Exo 2", "Bebas Neue", "Press Start 2P",
+                  "Montserrat", "Russo One", "Audiowide", "Chakra Petch",
+                  "Arial", "Georgia", "Impact", "Courier New", "Trebuchet MS"
+                ].map(f => (
                   <option key={f} value={f} style={{ background: "#0c1a2e" }}>{f}</option>
                 ))}
               </select>
+
+              {/* Visual Font Preview Grid */}
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))", gap: 8 }}>
+                {([
+                  { name: "Rajdhani",       cssVar: "var(--font-rajdhani), 'Rajdhani', sans-serif" },
+                  { name: "Orbitron",        cssVar: "var(--font-orbitron), 'Orbitron', monospace" },
+                  { name: "Inter",           cssVar: "var(--font-inter), 'Inter', sans-serif" },
+                  { name: "Exo 2",           cssVar: "var(--font-exo2), 'Exo 2', sans-serif" },
+                  { name: "Bebas Neue",      cssVar: "var(--font-bebas), 'Bebas Neue', sans-serif" },
+                  { name: "Press Start 2P",  cssVar: "var(--font-pressstart), 'Press Start 2P', monospace" },
+                  { name: "Montserrat",      cssVar: "var(--font-montserrat), 'Montserrat', sans-serif" },
+                  { name: "Russo One",       cssVar: "var(--font-russo), 'Russo One', sans-serif" },
+                  { name: "Audiowide",       cssVar: "var(--font-audiowide), 'Audiowide', sans-serif" },
+                  { name: "Chakra Petch",    cssVar: "var(--font-chakra), 'Chakra Petch', sans-serif" },
+                  { name: "Impact",          cssVar: "Impact, sans-serif" },
+                  { name: "Georgia",         cssVar: "Georgia, serif" },
+                ] as { name: string; cssVar: string }[]).map(f => {
+                  const isSelected = promoStyle.font === f.name;
+                  return (
+                    <div
+                      key={f.name}
+                      onClick={() => setPromoStyle(s => ({ ...s, font: f.name }))}
+                      style={{
+                        padding: "10px 10px 6px",
+                        borderRadius: 10,
+                        border: isSelected ? "1.5px solid var(--cyan)" : "1px solid rgba(0,210,255,0.12)",
+                        background: isSelected ? "rgba(0,210,255,0.08)" : "rgba(0,0,0,0.25)",
+                        cursor: "pointer",
+                        transition: "all .15s",
+                        textAlign: "center",
+                        boxShadow: isSelected ? "0 0 12px rgba(0,210,255,0.2)" : "none",
+                      }}
+                      onMouseEnter={e => { if (!isSelected) e.currentTarget.style.background = "rgba(0,210,255,0.05)"; }}
+                      onMouseLeave={e => { if (!isSelected) e.currentTarget.style.background = "rgba(0,0,0,0.25)"; }}
+                    >
+                      {/* Sample text in the font */}
+                      <div style={{
+                        fontFamily: f.cssVar,
+                        fontSize: f.name === "Press Start 2P" ? 11 : 18,
+                        fontWeight: 700,
+                        color: isSelected ? "var(--cyan)" : "#fff",
+                        letterSpacing: 1,
+                        lineHeight: 1.2,
+                        marginBottom: 4,
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}>Aa 123</div>
+                      {/* Font name label */}
+                      <div style={{
+                        fontFamily: "var(--font-rajdhani), sans-serif",
+                        fontSize: 9,
+                        letterSpacing: 1.5,
+                        color: isSelected ? "var(--cyan)" : "rgba(148,163,184,0.6)",
+                        textTransform: "uppercase",
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}>{f.name}</div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
             <div>
               <label>FONT SIZE — {promoStyle.size}px</label>
