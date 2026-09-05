@@ -180,3 +180,4 @@ input[readonly] { cursor:pointer; }
   text-shadow: 0 0 8px rgba(255, 215, 0, 0.3);
 }
 .timer-promo-text { font-family: var(--font-rajdhani), sans-serif; font-size: 24px; font-weight: 700; letter-spacing: 2px; color: #ffffff;  text-align: center; margin-top: 12px; text-shadow: 0 0 8px rgba(255,255,255,0.5); display: flex; flex-direction: column; gap: 8px; } .promo-highlight { color: var(--cyan); font-weight: 800; text-shadow: 0 0 12px var(--cyan), 0 0 20px var(--cyan); } .promo-gold { color: #FFD700; font-weight: 800; } .promo-dim { color: rgba(255,255,255,0.6); margin: 0 6px; }
+.timer-promo-dynamic { display: flex; flex-direction: column; align-items: center; gap: 6px; margin-top: 12px; text-align: center; }

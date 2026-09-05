@@ -5,9 +5,12 @@ import { Suspense } from "react";
 
 interface Donor { name: string; amount: number; }
 interface TimerState { remaining: number; running: boolean; total: number; targetEndTime?: number; }
+interface PromoStyle { font: string; color: string; size: number; glowColor: string; glowStrength: number; }
 interface OverlayState {
   timer: TimerState; donors: Donor[];
   showTimer: boolean; showDonors: boolean; showAmounts: boolean; updatedAt: number;
+  promoText?: string;
+  promoStyle?: PromoStyle;
 }
 
 function pad(n: number) { return String(n).padStart(2, "0"); }
@@ -87,7 +90,34 @@ function WidgetInner() {
           <div className="timer-pill">
             <div className={`timer-display-new${urgent ? " urgent" : ""}`}>{formatTime(localSecs)}</div>
           </div>
-          <div className="timer-promo-text"><div>UPI: <span className="promo-gold">pitajiplayz@ibl</span></div><div>₹3K UPI = <span className="promo-gold">+1 HR</span></div></div>
+          {state.promoText && (
+            <div className="timer-promo-dynamic">
+              {state.promoText.split("\n").map((line, i) => {
+                const style = state.promoStyle;
+                const defaultFont = "Rajdhani";
+                const font = style?.font || defaultFont;
+                const cssFont = font === "Orbitron"
+                  ? `var(--font-orbitron), ${font}, monospace`
+                  : font === "Inter"
+                  ? `var(--font-inter), ${font}, sans-serif`
+                  : font === "Rajdhani"
+                  ? `var(--font-rajdhani), ${font}, sans-serif`
+                  : `${font}, sans-serif`;
+                return (
+                  <div key={i} style={{
+                    fontFamily: cssFont,
+                    fontSize: style?.size ?? 24,
+                    color: style?.color ?? "#ffffff",
+                    textShadow: style ? `0 0 ${style.glowStrength}px ${style.glowColor}, 0 0 ${style.glowStrength * 2}px ${style.glowColor}` : "0 0 8px rgba(255,255,255,0.5)",
+                    fontWeight: 700,
+                    letterSpacing: 2,
+                    lineHeight: 1.5,
+                    textAlign: "center",
+                  }}>{line || "\u00a0"}</div>
+                );
+              })}
+            </div>
+          )}
         </div>
       )}
       {showDonors && (

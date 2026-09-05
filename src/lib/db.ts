@@ -39,9 +39,18 @@ export async function getDb(): Promise<Db> {
 
 export interface Donor { name: string; amount: number; color?: string; }
 export interface TimerState { remaining: number; running: boolean; total: number; targetEndTime?: number; }
+export interface PromoStyle {
+  font: string;
+  color: string;
+  size: number;
+  glowColor: string;
+  glowStrength: number;
+}
 export interface OverlayState {
   timer: TimerState; donors: Donor[];
   showTimer: boolean; showDonors: boolean; showAmounts: boolean; updatedAt: number;
+  promoText?: string;
+  promoStyle?: PromoStyle;
   _action?: string;
 }
 
@@ -56,6 +65,8 @@ export function getDefaultState(): OverlayState {
   return {
     timer: { remaining: 600, running: false, total: 600 },
     donors: [], showTimer: true, showDonors: true, showAmounts: true, updatedAt: Date.now(),
+    promoText: "UPI: pitajiplayz@ibl\n₹3K UPI = +1 HR",
+    promoStyle: { font: "Rajdhani", color: "#ffffff", size: 24, glowColor: "#ffffff", glowStrength: 8 },
   };
 }
 
