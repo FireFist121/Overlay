@@ -8,18 +8,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Orbitron:wght@700;900&family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --cyan:    #00d2ff;
-      --cyan2:   #3b82f6;
-      --navy:    #0a1128;
-      --navy2:   #0f172a;
-      --navy3:   #1e293b;
-      --gold:    #ffd700;
-      --white:   #ffffff;
-      --muted:   #94a3b8; /* muted gray-blue */
-    }
-
     html, body {
       background: transparent;
       width: 420px;
@@ -27,109 +15,85 @@
       overflow: hidden;
     }
 
-    /* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ TIMER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
-    #timer-block { margin-bottom: 14px; position: relative; }
-    #timer-block.hidden { display: none; }
+    /* ── TIMER ── */
+    #timer-block { display: none; flex-direction: column; align-items: center; margin-bottom: 24px; }
 
-    .timer-shell {
-      background: var(--navy);
-      border: 1px solid rgba(0, 210, 255, 0.4);
-      border-radius: 12px;
-      padding: 18px 24px;
-      display: flex;
-      flex-direction: column;
+    .timer-pill {
+      background: #0a1128;
+      border: 1px solid rgba(0,210,255,0.4);
+      border-radius: 50px;
+      padding: 12px 32px;
+      display: inline-flex;
+      justify-content: center;
       align-items: center;
-      gap: 10px;
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 0 20px rgba(0, 210, 255, 0.15);
-    }
-    
-    .timer-content { 
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      width: 100%;
-    }
-
-    .timer-label {
-      font-family: 'Rajdhani', sans-serif;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 3px;
-      color: var(--muted);
-      text-transform: uppercase;
-      margin-bottom: 4px;
+      box-shadow: 0 0 8px rgba(0,210,255,0.08);
+      margin-bottom: 8px;
     }
 
     #timer-display {
       font-family: 'Orbitron', monospace;
-      font-size: 46px;
+      font-size: 42px;
       font-weight: 900;
-      color: var(--white);
+      color: #ffffff;
+      letter-spacing: 4px;
+      text-shadow: 0 0 6px rgba(0,210,255,0.35);
       line-height: 1;
-      text-shadow: 0 0 12px var(--cyan), 0 0 25px rgba(0, 210, 255, 0.6);
-      letter-spacing: 3px;
     }
 
-    .timer-progress-bg {
-      width: 100%;
-      height: 6px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 3px;
-      overflow: hidden;
-      margin-top: 8px;
+    #timer-display.urgent {
+      color: #ff4d6d;
+      text-shadow: 0 0 12px #ff4d6d;
+      animation: blink 0.5s ease-in-out infinite;
     }
 
-    .timer-progress-bar {
-      height: 100%;
-      width: 100%;
-      background: linear-gradient(90deg, var(--cyan2), var(--cyan));
-      box-shadow: 0 0 10px var(--cyan);
-      transition: width 1s linear;
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+    #promo-block {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      margin-top: 12px;
+      text-align: center;
     }
 
-    .timer-status-text {
-      font-family: 'Rajdhani', sans-serif;
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 2px;
-      color: var(--muted);
-      text-transform: uppercase;
-      margin-top: 8px;
+    .promo-line {
+      display: flex;
+      gap: 6px;
+      align-items: baseline;
+      justify-content: center;
+      flex-wrap: wrap;
     }
 
-    /* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ DONATOR LIST â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
-
-    #donator-block.hidden { display: none; }
+    /* ── DONORS ── */
+    #donator-block { display: none; width: 200px; }
 
     .list-header {
-      background: var(--navy);
-      border: 1px solid rgba(0, 210, 255, 0.3);
+      background: #0a1128;
+      border: 1px solid rgba(0,210,255,0.3);
       border-radius: 12px;
       padding: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
       margin-bottom: 10px;
-      box-shadow: 0 0 15px rgba(0, 210, 255, 0.1);
+      box-shadow: 0 0 15px rgba(0,210,255,0.1);
     }
     .list-header-title {
       font-family: 'Rajdhani', sans-serif;
       font-weight: 700;
       font-size: 13px;
       letter-spacing: 4px;
-      color: var(--cyan);
+      color: #00d2ff;
       text-transform: uppercase;
-      text-shadow: 0 0 8px var(--cyan);
+      text-shadow: 0 0 8px #00d2ff;
     }
 
     #donators-list { display: flex; flex-direction: column; gap: 8px; }
 
     .donor-card {
-      --card-accent: var(--gold);
-      background: linear-gradient(135deg, #1f1a00 0%, var(--navy2) 80%);
-      border: 1px solid rgba(255, 215, 0, 0.4);
+      background: linear-gradient(135deg, #1f1a00 0%, #0f172a 80%);
+      border: 1px solid rgba(255,215,0,0.4);
       border-radius: 10px;
       padding: 10px 14px;
       display: flex;
@@ -137,180 +101,262 @@
       gap: 12px;
       position: relative;
       overflow: hidden;
-      transition: all 0.3s ease;
       animation: slideIn 0.5s ease both;
     }
-    @keyframes slideIn {
-      from { opacity: 0; transform: translateX(-20px); }
-      to   { opacity: 1; transform: translateX(0); }
-    }
-
     .donor-card::before {
       content: '';
       position: absolute;
       left: 0; top: 0; bottom: 0;
       width: 4px;
-      background: var(--card-accent);
-      box-shadow: 0 0 10px var(--card-accent);
+      background: #ffd700;
+      box-shadow: 0 0 10px #ffd700;
     }
+    @keyframes slideIn { from{opacity:0;transform:translateX(-20px)} to{opacity:1;transform:translateX(0)} }
 
     .donor-rank {
       font-family: 'Orbitron', monospace;
       font-size: 15px;
       font-weight: 900;
-      color: var(--card-accent);
-      text-shadow: 0 0 10px var(--card-accent);
+      color: #ffd700;
+      text-shadow: 0 0 10px #ffd700;
       width: 24px;
       text-align: center;
       flex-shrink: 0;
     }
-
     .donor-info { flex: 1; min-width: 0; }
     .donor-name {
       font-family: 'Rajdhani', sans-serif;
       font-weight: 700;
       font-size: 16px;
-      color: var(--white);
+      color: #ffffff;
       text-transform: uppercase;
       letter-spacing: 1.5px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    .donor-sub {
-      font-size: 10px;
-      letter-spacing: 2px;
-      color: var(--muted);
-      text-transform: uppercase;
-      font-family: 'Rajdhani', sans-serif;
-    }
-
     .donor-amount {
-      background: rgba(0, 0, 0, 0.3);
-      border: 1px solid var(--card-accent);
+      background: rgba(0,0,0,0.3);
+      border: 1px solid #ffd700;
       border-radius: 6px;
       padding: 4px 10px;
       font-family: 'Orbitron', monospace;
       font-size: 13px;
       font-weight: 700;
-      color: var(--card-accent) !important;
-      text-shadow: 0 0 8px rgba(var(--card-accent), 0.5);
+      color: #ffd700;
       white-space: nowrap;
       flex-shrink: 0;
     }
-    .donor-amount { color: var(--gold) !important; }
-
-    /* empty state */
-    #empty-state {
+    .empty-state {
       text-align: center;
-      padding: 30px 20px;
-      color: var(--muted);
+      padding: 30px;
+      color: #94a3b8;
       font-family: 'Rajdhani', sans-serif;
       font-size: 14px;
       letter-spacing: 2px;
     }
-</style>
+
+    /* next.js build indicator — hide in OBS */
+    #next-build-indicator, nextjs-portal { display: none !important; }
+  </style>
 </head>
 <body>
-<div id="timer-block" class="hidden">
-  <div class="timer-shell">
-    <div class="timer-icon">Ã¢ÂÂ±</div>
-    <div class="timer-content">
-      <div class="timer-label">Stream Timer</div>
-      <div id="timer-display">00:00:00</div>
-    </div>
-    <div class="status-dot" id="status-dot"></div>
+
+<div id="timer-block">
+  <div class="timer-pill">
+    <div id="timer-display">00:00:00</div>
   </div>
+  <div id="promo-block"></div>
 </div>
-<div id="donator-block" class="hidden">
+
+<div id="donator-block">
   <div class="list-header">
-    <div class="list-header-line"></div>
-    <div class="list-header-title">Top Supporters</div>
-    <div class="list-header-line"></div>
+    <span class="list-header-title">TOP SUPPORTERS</span>
   </div>
   <div id="donators-list">
-    <div id="empty-state">NO DONATORS YET</div>
+    <div class="empty-state">NO DONATORS YET</div>
   </div>
 </div>
-<div id="toast"></div>
-<script>
-const KEY_DONORS='overlay_donors',KEY_TIMER='overlay_timer',KEY_SHOW_T='overlay_show_timer',KEY_SHOW_D='overlay_show_donors';
-let timerState={remaining:0,running:false},timerTick=null,donors=[];
-const urlParams = new URLSearchParams(window.location.search);
-const widgetType = urlParams.get('type');
-function pad(n){return String(n).padStart(2,'0')}
-function formatTime(secs){
-  secs=Math.max(0,secs);
-  const h=Math.floor(secs/3600),m=Math.floor((secs%3600)/60),s=secs%60;
-  return `${pad(h)}:${pad(m)}:${pad(s)}`;
-}
-function formatAmt(n){return 'â‚¹'+Number(n).toLocaleString('en-IN')}
-function renderTimer(){
-  const el=document.getElementById('timer-display'),blk=document.getElementById('timer-block');
-  const prog=document.getElementById('timer-progress'),stat=document.getElementById('timer-status-msg');
-  if(widgetType==='donors'){blk.style.display='none';return;}
-  const showT=localStorage.getItem(KEY_SHOW_T)!=='false';
-  blk.style.display=showT?'block':'none';
-  el.textContent=formatTime(timerState.remaining);
-  
-  if(timerState.remaining<=0){
-    prog.style.width='0%';
-    stat.textContent='WAITING FOR EVENTS...';
-  } else if(!timerState.running){
-    stat.textContent='PAUSED';
-  } else {
-    stat.textContent='IN PROGRESS';
-    // Calculate progress if we had a total time, but we don't store total reliably.
-    // Let's just simulate a simple progress or keep it full.
-    // For now, if running, keep it 100% or calculate based on an arbitrary max.
-    // We will just leave width as is or 100%.
-    prog.style.width='100%'; 
-  }
-}
 
-function renderDonors(){
-  const blk=document.getElementById('donator-block'),list=document.getElementById('donators-list');
-  if(widgetType==='timer'){blk.style.display='none';return;}
-  const showD=localStorage.getItem(KEY_SHOW_D)!=='false';
-  blk.style.display=showD?'block':'none';
-  if(!donors||donors.length===0){list.innerHTML='<div id="empty-state">NO DONATORS YET</div>';return;}
-  list.innerHTML='';
-  donors.slice(0,5).forEach((d,i)=>{
-    const rank=i+1,card=document.createElement('div');
-    card.className='donor-card';card.dataset.rank=rank;card.style.animationDelay=(i*.07)+'s';
-    card.innerHTML=`
-      <div class="donor-rank">#${rank}</div>
-      <div class="donor-info"><div class="donor-name">${d.name}</div><div class="donor-sub">DONATION</div></div>
-      <div class="donor-amount">${formatAmt(d.amount)}</div>`;
-    list.appendChild(card);
-  });
-}
-function startTick(){
-  if(timerTick)return;
-  timerTick=setInterval(()=>{
-    if(!timerState.running||timerState.remaining<=0)return;
-    timerState.remaining--;
-    if(timerState.remaining<=0){timerState.running=false;clearInterval(timerTick);timerTick=null;}
-    renderTimer();
-  },1000);
-}
-function stopTick(){clearInterval(timerTick);timerTick=null;}
-function syncAll(){
-  try{donors=JSON.parse(localStorage.getItem(KEY_DONORS)||'[]');}catch{donors=[];}
-  try{
-    const ts=JSON.parse(localStorage.getItem(KEY_TIMER)||'null');
-    if(ts){const wr=timerState.running;timerState=ts;if(ts.running&&!wr)startTick();if(!ts.running)stopTick();}
-  }catch{}
-  renderTimer();renderDonors();
-}
-const bc=new BroadcastChannel('overlay_channel');
-bc.onmessage=(e)=>{if(e.data.type==='update')syncAll();if(e.data.type==='toast')showToast(e.data.msg);};
-function showToast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2800);}
-syncAll();
-setInterval(syncAll,2000);
+<script>
+  const urlParams   = new URLSearchParams(window.location.search);
+  const ROOM        = urlParams.get('room') || 'default';
+  const WIDGET_TYPE = urlParams.get('type'); // 'timer' | 'donors' | null
+
+  // Try to resolve the API base — if this file is served from the same origin as Next.js, use relative URL
+  const API_BASE = '';  // leave empty = relative to current origin
+
+  let lastUpdatedAt = 0;
+  let endTimeRef    = null;
+  let localRunning  = false;
+  let tickInterval  = null;
+  let state         = null;
+
+  function pad(n) { return String(n).padStart(2, '0'); }
+  function fmt(secs) {
+    secs = Math.max(0, secs);
+    const h = Math.floor(secs / 3600), m = Math.floor((secs % 3600) / 60), s = secs % 60;
+    return `${pad(h)}:${pad(m)}:${pad(s)}`;
+  }
+  function fmtAmt(n) { return '₹' + Number(n).toLocaleString('en-IN'); }
+
+  // ── FETCH STATE ──────────────────────────────────────────────────────────────
+  async function fetchState() {
+    try {
+      const res  = await fetch(`${API_BASE}/api/state?room=${ROOM}`, { cache: 'no-store' });
+      const data = await res.json();
+      if (data.updatedAt !== lastUpdatedAt) {
+        lastUpdatedAt = data.updatedAt;
+        state = data;
+        applyState(data);
+      }
+    } catch(e) { console.warn('fetchState error', e); }
+  }
+
+  // ── APPLY STATE ──────────────────────────────────────────────────────────────
+  function applyState(data) {
+    // Timer visibility
+    const showTimer  = WIDGET_TYPE !== 'donors' && data.showTimer;
+    const showDonors = WIDGET_TYPE !== 'timer'  && data.showDonors;
+    document.getElementById('timer-block').style.display   = showTimer  ? 'flex' : 'none';
+    document.getElementById('donator-block').style.display = showDonors ? 'block' : 'none';
+
+    // Timer value
+    if (data.timer.running && data.timer.targetEndTime) {
+      endTimeRef   = data.timer.targetEndTime;
+      localRunning = true;
+      const secs = Math.max(0, Math.ceil((data.timer.targetEndTime - Date.now()) / 1000));
+      setTimerDisplay(secs, localRunning);
+    } else {
+      endTimeRef   = null;
+      localRunning = data.timer.running;
+      setTimerDisplay(data.timer.remaining, localRunning);
+    }
+    startLocalTick();
+
+    // Promo text
+    renderPromo(data);
+
+    // Donors
+    renderDonors(data);
+  }
+
+  // ── TIMER DISPLAY ────────────────────────────────────────────────────────────
+  function setTimerDisplay(secs, running) {
+    const el = document.getElementById('timer-display');
+    el.textContent = fmt(secs);
+    if (secs <= 30 && running) {
+      el.classList.add('urgent');
+    } else {
+      el.classList.remove('urgent');
+    }
+  }
+
+  function startLocalTick() {
+    if (tickInterval) clearInterval(tickInterval);
+    if (!localRunning) return;
+    tickInterval = setInterval(() => {
+      const secs = endTimeRef
+        ? Math.max(0, Math.ceil((endTimeRef - Date.now()) / 1000))
+        : 0;
+      setTimerDisplay(secs, localRunning);
+      if (secs <= 0) {
+        localRunning = false;
+        clearInterval(tickInterval);
+        tickInterval = null;
+      }
+    }, 200);
+  }
+
+  // ── PROMO TEXT ───────────────────────────────────────────────────────────────
+  function getCssFont(font) {
+    if (!font || font === 'Rajdhani') return "'Rajdhani', sans-serif";
+    if (font === 'Orbitron') return "'Orbitron', monospace";
+    if (font === 'Inter')    return "'Inter', sans-serif";
+    return `'${font}', sans-serif`;
+  }
+
+  function renderPromo(data) {
+    const block = document.getElementById('promo-block');
+    block.innerHTML = '';
+
+    const style    = data.promoStyle || {};
+    const fontSize = (style.size || 24) + 'px';
+    const cssFont  = getCssFont(style.font);
+    const glowStr  = style.glowStrength != null ? style.glowStrength : 8;
+    const glowClr  = style.glowColor  || '#ffffff';
+    const shadow   = `0 0 ${glowStr}px ${glowClr}, 0 0 ${glowStr * 2}px ${glowClr}`;
+
+    // Prefer per-word segment data
+    if (data.promoSegments && data.promoSegments.length > 0) {
+      data.promoSegments.forEach(line => {
+        const lineEl = document.createElement('div');
+        lineEl.className = 'promo-line';
+        line.forEach(seg => {
+          const span = document.createElement('span');
+          span.textContent = seg.text;
+          span.style.cssText = `
+            font-family: ${cssFont};
+            font-size: ${fontSize};
+            font-weight: 700;
+            color: ${seg.color};
+            text-shadow: ${shadow};
+            letter-spacing: 2px;
+            line-height: 1.4;
+            white-space: nowrap;
+          `;
+          lineEl.appendChild(span);
+        });
+        block.appendChild(lineEl);
+      });
+      return;
+    }
+
+    // Fallback: plain promoText
+    if (data.promoText) {
+      const defColor = style.color || '#ffffff';
+      data.promoText.split('\n').forEach(line => {
+        const lineEl = document.createElement('div');
+        lineEl.className = 'promo-line';
+        lineEl.style.cssText = `
+          font-family: ${cssFont};
+          font-size: ${fontSize};
+          font-weight: 700;
+          color: ${defColor};
+          text-shadow: ${shadow};
+          letter-spacing: 2px;
+          line-height: 1.5;
+        `;
+        lineEl.textContent = line;
+        block.appendChild(lineEl);
+      });
+    }
+  }
+
+  // ── DONORS ───────────────────────────────────────────────────────────────────
+  function renderDonors(data) {
+    const list = document.getElementById('donators-list');
+    if (!data.donors || data.donors.length === 0) {
+      list.innerHTML = '<div class="empty-state">NO DONATORS YET</div>';
+      return;
+    }
+    list.innerHTML = '';
+    data.donors.slice(0, 10).forEach((d, i) => {
+      const card = document.createElement('div');
+      card.className = 'donor-card';
+      card.style.animationDelay = (i * 0.07) + 's';
+      card.innerHTML = `
+        <div class="donor-rank">#${i + 1}</div>
+        <div class="donor-info"><div class="donor-name">${d.name}</div></div>
+        ${(data.showAmounts !== false) && d.amount > 0 ? `<div class="donor-amount">${fmtAmt(d.amount)}</div>` : ''}
+      `;
+      list.appendChild(card);
+    });
+  }
+
+  // ── BOOT ─────────────────────────────────────────────────────────────────────
+  fetchState();
+  setInterval(fetchState, 1500);
 </script>
 </body>
 </html>
-
-
-
