@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 interface Donor { name: string; amount: number; color?: string; }
 interface TimerState { remaining: number; running: boolean; total: number; targetEndTime?: number; }
 interface PromoStyle { font: string; color: string; size: number; glowColor: string; glowStrength: number; }
+interface PromoSegment { text: string; color: string; }
 interface OverlayState {
   timer: TimerState;
   donors: Donor[];
@@ -14,6 +15,7 @@ interface OverlayState {
   updatedAt: number;
   promoText?: string;
   promoStyle?: PromoStyle;
+  promoSegments?: PromoSegment[][];
   _action?: string;
 }
 interface LogEntry {
@@ -193,7 +195,20 @@ function AdminInner() {
   const DEFAULT_PROMO_STYLE: PromoStyle = { font: "Rajdhani", color: "#ffffff", size: 24, glowColor: "#ffffff", glowStrength: 8 };
   const [promoText, setPromoText] = useState("UPI: pitajiplayz@ibl\n\u20b93K UPI = +1 HR");
   const [promoStyle, setPromoStyle] = useState<PromoStyle>(DEFAULT_PROMO_STYLE);
+  const [promoSegments, setPromoSegments] = useState<PromoSegment[][]>([
+    [{ text: "UPI:", color: "#ffffff" }, { text: "pitajiplayz@ibl", color: "#ffd700" }],
+    [{ text: "\u20b93K", color: "#ffffff" }, { text: "UPI", color: "#ffffff" }, { text: "=", color: "#ffffff" }, { text: "+1", color: "#ffd700" }, { text: "HR", color: "#ffd700" }],
+  ]);
   const [promoSynced, setPromoSynced] = useState(false);
+
+  // Parse text into segments, preserving existing word colors by text match
+  const parseToSegments = (text: string, existing: PromoSegment[][], defaultColor: string): PromoSegment[][] => {
+    const flat: Record<string, string> = {};
+    existing.forEach(line => line.forEach(seg => { if (!flat[seg.text]) flat[seg.text] = seg.color; }));
+    return text.split("\n").map(line =>
+      line.split(" ").filter(w => w.length > 0).map(word => ({ text: word, color: flat[word] || defaultColor }))
+    ).filter(line => line.length > 0);
+  };
 
   const tickRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const endTimeRef = useRef<number | null>(null);
@@ -210,9 +225,16 @@ function AdminInner() {
     if (!promoSynced && state) {
       if (state.promoText !== undefined) setPromoText(state.promoText);
       if (state.promoStyle !== undefined) setPromoStyle(state.promoStyle);
+      if (state.promoSegments !== undefined) setPromoSegments(state.promoSegments);
       setPromoSynced(true);
     }
   }, [state, promoSynced]);
+
+  // When promoText changes, re-parse segments preserving existing colors
+  const handlePromoTextChange = (text: string) => {
+    setPromoText(text);
+    setPromoSegments(prev => parseToSegments(text, prev, promoStyle.color));
+  };
 
   const showToast = (msg: string) => { setToast(msg); setTimeout(() => setToast(""), 2500); };
 
@@ -517,125 +539,145 @@ function AdminInner() {
 
         {/* PROMO TEXT CUSTOMISER */}
         <div className="card full-card">
-          <div className="card-title"><span>✏</span> Timer Promo Text</div>
-          {/* Live preview */}
-          <div style={{ textAlign: "center", marginBottom: 16, background: "rgba(0,0,0,0.35)", borderRadius: 12, padding: "18px 24px", border: "1px solid rgba(0,210,255,0.12)" }}>
-            {promoText.split("\n").map((line, i) => (
-              <div key={i} style={{
-                fontFamily: `var(--font-${promoStyle.font === "Orbitron" ? "orbitron" : promoStyle.font === "Inter" ? "inter" : "rajdhani"}), ${promoStyle.font}, sans-serif`,
-                fontSize: promoStyle.size,
-                color: promoStyle.color,
-                textShadow: `0 0 ${promoStyle.glowStrength}px ${promoStyle.glowColor}, 0 0 ${promoStyle.glowStrength * 2}px ${promoStyle.glowColor}`,
-                fontWeight: 700,
-                letterSpacing: 2,
-                lineHeight: 1.5,
-              }}>{line || "\u00a0"}</div>
-            ))}
+          <div className="card-title"><span>✏</span> Timer Promo Text &amp; Word Colors</div>
+
+          {/* OBS Live Preview */}
+          <div style={{ marginBottom: 20 }}>
+            <label style={{ marginBottom: 8, display: "block" }}>LIVE OBS PREVIEW — what is actually showing right now</label>
+            <div style={{ background: "#111", borderRadius: 14, overflow: "hidden", border: "2px solid rgba(0,210,255,0.3)", boxShadow: "0 0 30px rgba(0,210,255,0.12)", position: "relative" }}>
+              <div style={{ position: "absolute", top: 8, right: 10, fontSize: 10, letterSpacing: 2, color: "rgba(0,210,255,0.6)", fontFamily: "var(--font-rajdhani),sans-serif", fontWeight: 700 }}>● LIVE</div>
+              <div style={{ padding: "12px 0", display: "flex", justifyContent: "center" }}>
+                <iframe
+                  key={room}
+                  src={`/widget?room=${room}&type=timer`}
+                  style={{ width: 440, height: 160, border: "none", background: "transparent", display: "block" }}
+                  scrolling="no"
+                />
+              </div>
+            </div>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-            {/* Text content */}
-            <div style={{ gridColumn: "1/-1" }}>
-              <label>TEXT CONTENT (one line per row)</label>
-              <textarea
-                value={promoText}
-                onChange={e => setPromoText(e.target.value)}
-                rows={3}
-                style={{ width: "100%", boxSizing: "border-box", padding: "10px 14px", background: "rgba(0,210,255,.05)", border: "1px solid rgba(0,210,255,.25)", borderRadius: 10, color: "#fff", fontFamily: "var(--font-inter),sans-serif", fontSize: 14, outline: "none", resize: "vertical", transition: "border-color .2s" }}
-                onFocus={e => e.target.style.borderColor = "var(--cyan)"}
-                onBlur={e => e.target.style.borderColor = "rgba(0,210,255,.25)"}
-              />
-            </div>
+          {/* Text Editor */}
+          <div style={{ marginBottom: 16 }}>
+            <label>TEXT CONTENT — one line per row, words separated by spaces</label>
+            <textarea
+              value={promoText}
+              onChange={e => handlePromoTextChange(e.target.value)}
+              rows={3}
+              style={{ width: "100%", boxSizing: "border-box", padding: "10px 14px", background: "rgba(0,210,255,.05)", border: "1px solid rgba(0,210,255,.25)", borderRadius: 10, color: "#fff", fontFamily: "var(--font-inter),sans-serif", fontSize: 14, outline: "none", resize: "vertical", transition: "border-color .2s", marginTop: 6 }}
+              onFocus={e => e.target.style.borderColor = "var(--cyan)"}
+              onBlur={e => e.target.style.borderColor = "rgba(0,210,255,.25)"}
+            />
+          </div>
 
-            {/* Font */}
+          {/* Per-word color editor */}
+          {promoSegments.length > 0 && (
+            <div style={{ marginBottom: 18 }}>
+              <label style={{ marginBottom: 10, display: "block" }}>WORD COLORS — click a color swatch to change that word&apos;s color</label>
+              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                {promoSegments.map((line, li) => (
+                  <div key={li} style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", background: "rgba(0,0,0,0.25)", borderRadius: 10, padding: "10px 14px", border: "1px solid rgba(0,210,255,0.08)" }}>
+                    <span style={{ fontSize: 10, letterSpacing: 2, color: "rgba(0,210,255,0.4)", fontFamily: "var(--font-rajdhani),sans-serif", fontWeight: 700, minWidth: 36 }}>L{li + 1}</span>
+                    {line.map((seg, wi) => (
+                      <label
+                        key={wi}
+                        title={`Change color of "${seg.text}"`}
+                        style={{
+                          display: "inline-flex", flexDirection: "column", alignItems: "center", gap: 4,
+                          cursor: "pointer", position: "relative",
+                        }}
+                      >
+                        {/* Word preview */}
+                        <span style={{
+                          fontFamily: `var(--font-${promoStyle.font === "Orbitron" ? "orbitron" : promoStyle.font === "Inter" ? "inter" : "rajdhani"}), ${promoStyle.font}, sans-serif`,
+                          fontSize: Math.max(14, promoStyle.size * 0.6),
+                          fontWeight: 700,
+                          color: seg.color,
+                          textShadow: `0 0 ${promoStyle.glowStrength * 0.6}px ${promoStyle.glowColor}`,
+                          letterSpacing: 1,
+                          padding: "2px 6px",
+                          borderRadius: 6,
+                          background: `${seg.color}14`,
+                          border: `1px solid ${seg.color}44`,
+                          transition: "all .15s",
+                          whiteSpace: "nowrap",
+                        }}>{seg.text}</span>
+                        {/* Color swatch */}
+                        <div style={{ width: 20, height: 8, borderRadius: 4, background: seg.color, boxShadow: `0 0 6px ${seg.color}88`, border: "1px solid rgba(255,255,255,0.15)" }} />
+                        {/* Hidden color input */}
+                        <input
+                          type="color"
+                          value={seg.color}
+                          onChange={e => {
+                            const c = e.target.value;
+                            setPromoSegments(prev => prev.map((ln, l) =>
+                              l === li ? ln.map((s, w) => w === wi ? { ...s, color: c } : s) : ln
+                            ));
+                          }}
+                          style={{ position: "absolute", opacity: 0, width: "100%", height: "100%", top: 0, left: 0, cursor: "pointer" }}
+                        />
+                      </label>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Style controls */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
             <div>
               <label>FONT</label>
               <select
                 value={promoStyle.font}
                 onChange={e => setPromoStyle(s => ({ ...s, font: e.target.value }))}
-                style={{ width: "100%", padding: "10px 14px", background: "rgba(0,210,255,.05)", border: "1px solid rgba(0,210,255,.25)", borderRadius: 10, color: "#fff", fontSize: 14, outline: "none", cursor: "pointer", transition: "border-color .2s" }}
-                onFocus={e => e.target.style.borderColor = "var(--cyan)"}
-                onBlur={e => e.target.style.borderColor = "rgba(0,210,255,.25)"}
+                style={{ width: "100%", padding: "10px 14px", background: "rgba(0,210,255,.05)", border: "1px solid rgba(0,210,255,.25)", borderRadius: 10, color: "#fff", fontSize: 14, outline: "none", cursor: "pointer" }}
               >
                 {["Rajdhani", "Orbitron", "Inter", "Arial", "Georgia", "Impact", "Courier New", "Trebuchet MS"].map(f => (
                   <option key={f} value={f} style={{ background: "#0c1a2e" }}>{f}</option>
                 ))}
               </select>
             </div>
-
-            {/* Font Size */}
             <div>
               <label>FONT SIZE — {promoStyle.size}px</label>
-              <input
-                type="range" min={10} max={72} value={promoStyle.size}
+              <input type="range" min={10} max={72} value={promoStyle.size}
                 onChange={e => setPromoStyle(s => ({ ...s, size: Number(e.target.value) }))}
-                style={{ width: "100%", accentColor: "var(--cyan)", cursor: "pointer" }}
+                style={{ width: "100%", accentColor: "var(--cyan)", cursor: "pointer", marginTop: 14 }}
               />
             </div>
-
-            {/* Text Color */}
-            <div>
-              <label>TEXT COLOR</label>
-              <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-                <input
-                  type="color" value={promoStyle.color}
-                  onChange={e => setPromoStyle(s => ({ ...s, color: e.target.value }))}
-                  style={{ width: 44, height: 44, border: "1px solid rgba(0,210,255,.3)", borderRadius: 8, background: "none", cursor: "pointer", padding: 2 }}
-                />
-                <input
-                  type="text" value={promoStyle.color}
-                  onChange={e => setPromoStyle(s => ({ ...s, color: e.target.value }))}
-                  style={{ flex: 1, margin: 0 }}
-                  placeholder="#ffffff"
-                />
-              </div>
-            </div>
-
-            {/* Glow Color */}
             <div>
               <label>GLOW COLOR</label>
               <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-                <input
-                  type="color" value={promoStyle.glowColor}
+                <input type="color" value={promoStyle.glowColor}
                   onChange={e => setPromoStyle(s => ({ ...s, glowColor: e.target.value }))}
                   style={{ width: 44, height: 44, border: "1px solid rgba(0,210,255,.3)", borderRadius: 8, background: "none", cursor: "pointer", padding: 2 }}
                 />
-                <input
-                  type="text" value={promoStyle.glowColor}
+                <input type="text" value={promoStyle.glowColor}
                   onChange={e => setPromoStyle(s => ({ ...s, glowColor: e.target.value }))}
-                  style={{ flex: 1, margin: 0 }}
-                  placeholder="#00d2ff"
+                  style={{ flex: 1, margin: 0 }} placeholder="#00d2ff"
                 />
               </div>
             </div>
-
-            {/* Glow Strength */}
-            <div style={{ gridColumn: "1/-1" }}>
+            <div>
               <label>GLOW STRENGTH — {promoStyle.glowStrength}px</label>
-              <input
-                type="range" min={0} max={40} value={promoStyle.glowStrength}
+              <input type="range" min={0} max={40} value={promoStyle.glowStrength}
                 onChange={e => setPromoStyle(s => ({ ...s, glowStrength: Number(e.target.value) }))}
-                style={{ width: "100%", accentColor: "var(--cyan)", cursor: "pointer" }}
+                style={{ width: "100%", accentColor: "var(--cyan)", cursor: "pointer", marginTop: 14 }}
               />
             </div>
 
-            {/* Quick color presets */}
+            {/* Quick glow presets */}
             <div style={{ gridColumn: "1/-1" }}>
               <label>QUICK GLOW PRESETS</label>
-              <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 4 }}>
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 6 }}>
                 {[
-                  { label: "Cyan",   color: "#00d2ff" },
-                  { label: "Gold",   color: "#ffd700" },
-                  { label: "White",  color: "#ffffff" },
-                  { label: "Green",  color: "#00ff88" },
-                  { label: "Red",    color: "#ff4d6d" },
-                  { label: "Purple", color: "#a855f7" },
-                  { label: "Orange", color: "#ff9f40" },
-                  { label: "Pink",   color: "#ff6eb4" },
+                  { label: "Cyan", color: "#00d2ff" }, { label: "Gold", color: "#ffd700" },
+                  { label: "White", color: "#ffffff" }, { label: "Green", color: "#00ff88" },
+                  { label: "Red", color: "#ff4d6d" }, { label: "Purple", color: "#a855f7" },
+                  { label: "Orange", color: "#ff9f40" }, { label: "Pink", color: "#ff6eb4" },
                 ].map(p => (
-                  <div
-                    key={p.label}
-                    onClick={() => setPromoStyle(s => ({ ...s, glowColor: p.color, color: s.color }))}
+                  <div key={p.label}
+                    onClick={() => setPromoStyle(s => ({ ...s, glowColor: p.color }))}
                     style={{ padding: "5px 12px", borderRadius: 8, border: `1px solid ${p.color}55`, background: `${p.color}18`, color: p.color, fontFamily: "var(--font-rajdhani),sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1, cursor: "pointer", transition: "all .15s" }}
                     onMouseEnter={e => (e.currentTarget.style.background = `${p.color}33`)}
                     onMouseLeave={e => (e.currentTarget.style.background = `${p.color}18`)}
@@ -647,8 +689,12 @@ function AdminInner() {
 
           <button
             className="btn btn-primary btn-full"
-            style={{ marginTop: 18 }}
-            onClick={() => { push({ promoText, promoStyle }); showToast("Promo text updated!"); }}
+            style={{ marginTop: 20 }}
+            onClick={() => {
+              const text = promoSegments.map(ln => ln.map(s => s.text).join(" ")).join("\n");
+              push({ promoText: text, promoStyle, promoSegments });
+              showToast("Promo text updated!");
+            }}
           >
             💾 Save &amp; Apply to Widget
           </button>

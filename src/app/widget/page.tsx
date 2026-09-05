@@ -6,11 +6,13 @@ import { Suspense } from "react";
 interface Donor { name: string; amount: number; }
 interface TimerState { remaining: number; running: boolean; total: number; targetEndTime?: number; }
 interface PromoStyle { font: string; color: string; size: number; glowColor: string; glowStrength: number; }
+interface PromoSegment { text: string; color: string; }
 interface OverlayState {
   timer: TimerState; donors: Donor[];
   showTimer: boolean; showDonors: boolean; showAmounts: boolean; updatedAt: number;
   promoText?: string;
   promoStyle?: PromoStyle;
+  promoSegments?: PromoSegment[][];
 }
 
 function pad(n: number) { return String(n).padStart(2, "0"); }
@@ -90,12 +92,43 @@ function WidgetInner() {
           <div className="timer-pill">
             <div className={`timer-display-new${urgent ? " urgent" : ""}`}>{formatTime(localSecs)}</div>
           </div>
-          {state.promoText && (
+          {(state.promoSegments && state.promoSegments.length > 0) ? (
+            <div className="timer-promo-dynamic">
+              {state.promoSegments.map((line, li) => {
+                const style = state.promoStyle;
+                const font = style?.font || "Rajdhani";
+                const cssFont = font === "Orbitron"
+                  ? `var(--font-orbitron), ${font}, monospace`
+                  : font === "Inter"
+                  ? `var(--font-inter), ${font}, sans-serif`
+                  : font === "Rajdhani"
+                  ? `var(--font-rajdhani), ${font}, sans-serif`
+                  : `${font}, sans-serif`;
+                return (
+                  <div key={li} style={{ display: "flex", gap: 6, alignItems: "baseline", justifyContent: "center", flexWrap: "wrap" }}>
+                    {line.map((seg, wi) => (
+                      <span key={wi} style={{
+                        fontFamily: cssFont,
+                        fontSize: style?.size ?? 24,
+                        fontWeight: 700,
+                        color: seg.color,
+                        textShadow: style
+                          ? `0 0 ${style.glowStrength}px ${style.glowColor}, 0 0 ${style.glowStrength * 2}px ${style.glowColor}`
+                          : `0 0 8px ${seg.color}`,
+                        letterSpacing: 2,
+                        lineHeight: 1.4,
+                        whiteSpace: "nowrap",
+                      }}>{seg.text}</span>
+                    ))}
+                  </div>
+                );
+              })}
+            </div>
+          ) : state.promoText ? (
             <div className="timer-promo-dynamic">
               {state.promoText.split("\n").map((line, i) => {
                 const style = state.promoStyle;
-                const defaultFont = "Rajdhani";
-                const font = style?.font || defaultFont;
+                const font = style?.font || "Rajdhani";
                 const cssFont = font === "Orbitron"
                   ? `var(--font-orbitron), ${font}, monospace`
                   : font === "Inter"
@@ -117,7 +150,7 @@ function WidgetInner() {
                 );
               })}
             </div>
-          )}
+          ) : null}
         </div>
       )}
       {showDonors && (

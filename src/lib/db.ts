@@ -46,11 +46,13 @@ export interface PromoStyle {
   glowColor: string;
   glowStrength: number;
 }
+export interface PromoSegment { text: string; color: string; }
 export interface OverlayState {
   timer: TimerState; donors: Donor[];
   showTimer: boolean; showDonors: boolean; showAmounts: boolean; updatedAt: number;
   promoText?: string;
   promoStyle?: PromoStyle;
+  promoSegments?: PromoSegment[][];
   _action?: string;
 }
 
@@ -67,6 +69,10 @@ export function getDefaultState(): OverlayState {
     donors: [], showTimer: true, showDonors: true, showAmounts: true, updatedAt: Date.now(),
     promoText: "UPI: pitajiplayz@ibl\n₹3K UPI = +1 HR",
     promoStyle: { font: "Rajdhani", color: "#ffffff", size: 24, glowColor: "#ffffff", glowStrength: 8 },
+    promoSegments: [
+      [{ text: "UPI:", color: "#ffffff" }, { text: "pitajiplayz@ibl", color: "#ffd700" }],
+      [{ text: "₹3K", color: "#ffffff" }, { text: "UPI", color: "#ffffff" }, { text: "=", color: "#ffffff" }, { text: "+1", color: "#ffd700" }, { text: "HR", color: "#ffd700" }],
+    ],
   };
 }
 
