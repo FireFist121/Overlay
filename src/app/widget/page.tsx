@@ -100,13 +100,13 @@ function WidgetInner() {
 
   const showTimer  = type !== "donors" && state.showTimer;
   const showDonors = type !== "timer"  && state.showDonors;
-  const urgent     = localSecs <= 30 && localRunning;
+  const themeClass = state.theme && state.theme !== "default" ? ` theme-${state.theme}` : "";
 
   return (
     <div style={{ background: "transparent", width: 420, fontFamily: "Inter, sans-serif", overflow: "visible", display: "flex", flexDirection: "column", alignItems: "center" }}>
       {showTimer && (
         <div className="timer-block" style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
-          <div className="timer-pill">
+          <div className={`timer-pill${themeClass}`}>
             <div className={`timer-display-new${urgent ? " urgent" : ""}`}>
               {formatTime(localSecs).split("").map((ch, idx) => (
                 <span key={idx} className={ch === ":" ? "t-sep" : "t-digit"}>{ch}</span>

@@ -53,6 +53,7 @@ export interface OverlayState {
   promoText?: string;
   promoStyle?: PromoStyle;
   promoSegments?: PromoSegment[][];
+  theme?: string;
   _action?: string;
 }
 
@@ -67,6 +68,7 @@ export function getDefaultState(): OverlayState {
   return {
     timer: { remaining: 600, running: false, total: 600 },
     donors: [], showTimer: true, showDonors: true, showAmounts: true, updatedAt: Date.now(),
+    theme: "default",
     promoText: "UPI: pitajiplayz@ibl\n₹3K UPI = +1 HR",
     promoStyle: { font: "Rajdhani", color: "#ffffff", size: 24, glowColor: "#ffffff", glowStrength: 8 },
     promoSegments: [

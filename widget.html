@@ -24,12 +24,29 @@
       border-radius: 50px;
       padding: 12px 32px;
       display: flex;
-      width: 310px;          /* fixed — never resizes */
+      width: 390px;          /* fixed — never resizes */
       justify-content: center;
       align-items: center;
       box-shadow: 0 0 8px rgba(0,210,255,0.08);
       margin-bottom: 8px;
+      transition: all 0.3s ease;
     }
+
+    /* Theme Variations */
+    .timer-pill.theme-gold { background: #1a1600; border-color: rgba(255,215,0,0.65); box-shadow: 0 0 20px rgba(255,215,0,0.22); }
+    .timer-pill.theme-gold #timer-display { color: #ffd700; text-shadow: 0 0 10px rgba(255,215,0,0.6); }
+
+    .timer-pill.theme-red { background: #20050a; border-color: rgba(255,77,109,0.65); box-shadow: 0 0 20px rgba(255,77,109,0.22); }
+    .timer-pill.theme-red #timer-display { color: #ffffff; text-shadow: 0 0 10px rgba(255,77,109,0.6); }
+
+    .timer-pill.theme-emerald { background: #041a12; border-color: rgba(0,255,136,0.65); box-shadow: 0 0 20px rgba(0,255,136,0.22); }
+    .timer-pill.theme-emerald #timer-display { color: #00ff88; text-shadow: 0 0 10px rgba(0,255,136,0.6); }
+
+    .timer-pill.theme-purple { background: #180829; border-color: rgba(168,85,247,0.65); box-shadow: 0 0 20px rgba(168,85,247,0.22); }
+    .timer-pill.theme-purple #timer-display { color: #f0abfc; text-shadow: 0 0 10px rgba(168,85,247,0.6); }
+
+    .timer-pill.theme-clean { background: #111827; border-color: rgba(255,255,255,0.25); box-shadow: 0 4px 20px rgba(0,0,0,0.4); }
+    .timer-pill.theme-clean #timer-display { color: #ffffff; text-shadow: none; }
 
     #timer-display {
       font-family: 'Orbitron', monospace;
@@ -46,13 +63,15 @@
     /* Fixed-width slots so no digit ever shifts its neighbours */
     .t-digit {
       display: inline-block;
-      width: 0.72em;       /* wide enough for any Orbitron digit */
+      width: 0.82em;       /* wide enough for any Orbitron digit with spacing */
       text-align: center;
+      margin: 0 1px;
     }
     .t-sep {
       display: inline-block;
-      width: 0.32em;
+      width: 0.42em;
       text-align: center;
+      margin: 0 1px;
     }
 
     #timer-display.urgent {
@@ -233,11 +252,16 @@
 
   // ── APPLY STATE ──────────────────────────────────────────────────────────────
   function applyState(data) {
-    // Timer visibility
+    // Timer visibility & theme
     const showTimer  = WIDGET_TYPE !== 'donors' && data.showTimer;
     const showDonors = WIDGET_TYPE !== 'timer'  && data.showDonors;
     document.getElementById('timer-block').style.display   = showTimer  ? 'flex' : 'none';
     document.getElementById('donator-block').style.display = showDonors ? 'block' : 'none';
+
+    const pill = document.querySelector('.timer-pill');
+    if (pill) {
+      pill.className = 'timer-pill' + (data.theme && data.theme !== 'default' ? ' theme-' + data.theme : '');
+    }
 
     // Timer value
     if (data.timer.running && data.timer.targetEndTime) {

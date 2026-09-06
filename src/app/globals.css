@@ -41,9 +41,9 @@ html, body { background: transparent; color: var(--white); font-family: var(--fo
   background: #0d1b2e;
   border: 2px solid rgba(0, 210, 255, 0.55);
   border-radius: 60px;
-  padding: 14px 44px;
+  padding: 14px 36px;
   display: flex;
-  width: 360px;
+  width: 390px;
   justify-content: center;
   align-items: center;
   box-shadow:
@@ -52,7 +52,60 @@ html, body { background: transparent; color: var(--white); font-family: var(--fo
     inset 0 0 20px rgba(0, 210, 255, 0.04);
   margin-bottom: 14px;
   backdrop-filter: blur(6px);
+  transition: all 0.3s ease;
 }
+
+/* Theme Variations */
+.timer-pill.theme-gold {
+  background: #1a1600;
+  border-color: rgba(255, 215, 0, 0.65);
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.22), inset 0 0 20px rgba(255, 215, 0, 0.05);
+}
+.timer-pill.theme-gold .timer-display-new {
+  color: #ffd700;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+}
+
+.timer-pill.theme-red {
+  background: #20050a;
+  border-color: rgba(255, 77, 109, 0.65);
+  box-shadow: 0 0 20px rgba(255, 77, 109, 0.22), inset 0 0 20px rgba(255, 77, 109, 0.05);
+}
+.timer-pill.theme-red .timer-display-new {
+  color: #ffffff;
+  text-shadow: 0 0 10px rgba(255, 77, 109, 0.6);
+}
+
+.timer-pill.theme-emerald {
+  background: #041a12;
+  border-color: rgba(0, 255, 136, 0.65);
+  box-shadow: 0 0 20px rgba(0, 255, 136, 0.22), inset 0 0 20px rgba(0, 255, 136, 0.05);
+}
+.timer-pill.theme-emerald .timer-display-new {
+  color: #00ff88;
+  text-shadow: 0 0 10px rgba(0, 255, 136, 0.6);
+}
+
+.timer-pill.theme-purple {
+  background: #180829;
+  border-color: rgba(168, 85, 247, 0.65);
+  box-shadow: 0 0 20px rgba(168, 85, 247, 0.22), inset 0 0 20px rgba(168, 85, 247, 0.05);
+}
+.timer-pill.theme-purple .timer-display-new {
+  color: #f0abfc;
+  text-shadow: 0 0 10px rgba(168, 85, 247, 0.6);
+}
+
+.timer-pill.theme-clean {
+  background: #111827;
+  border-color: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+.timer-pill.theme-clean .timer-display-new {
+  color: #ffffff;
+  text-shadow: none;
+}
+
 .timer-display-new {
   font-family: var(--font-orbitron), monospace;
   font-size: 52px;
@@ -68,13 +121,15 @@ html, body { background: transparent; color: var(--white); font-family: var(--fo
 }
 .t-digit {
   display: inline-block;
-  width: 0.72em;
+  width: 0.82em;
   text-align: center;
+  margin: 0 1px;
 }
 .t-sep {
   display: inline-block;
-  width: 0.32em;
+  width: 0.42em;
   text-align: center;
+  margin: 0 1px;
 }
 .timer-display-new.urgent {
   color: var(--red);

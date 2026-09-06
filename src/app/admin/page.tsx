@@ -780,6 +780,66 @@ function AdminInner() {
           </button>
         </div>
 
+        {/* WIDGET THEMES */}
+        <div className="card full-card">
+          <div className="card-title"><span>🎨</span> Timer Widget Theme Presets</div>
+          <label style={{ marginBottom: 12, display: "block" }}>SELECT A THEME — updates live in OBS (Cyber Cyan is default)</label>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))", gap: 12 }}>
+            {[
+              { id: "default", name: "Cyber Cyan", color: "#00d2ff", bg: "#0d1b2e", border: "#00d2ff" },
+              { id: "gold",    name: "Imperial Gold", color: "#ffd700", bg: "#1a1600", border: "#ffd700" },
+              { id: "red",     name: "Crimson Red", color: "#ff4d6d", bg: "#20050a", border: "#ff4d6d" },
+              { id: "emerald", name: "Toxic Green", color: "#00ff88", bg: "#041a12", border: "#00ff88" },
+              { id: "purple",  name: "Synthwave", color: "#f0abfc", bg: "#180829", border: "#a855f7" },
+              { id: "clean",   name: "Minimal Dark", color: "#ffffff", bg: "#111827", border: "#ffffff" },
+            ].map(th => {
+              const active = (state.theme || "default") === th.id;
+              return (
+                <div
+                  key={th.id}
+                  onClick={() => {
+                    push({ theme: th.id });
+                    showToast(`Theme changed to ${th.name}!`);
+                  }}
+                  style={{
+                    background: th.bg,
+                    border: active ? `2px solid ${th.border}` : `1px solid rgba(255,255,255,0.12)`,
+                    borderRadius: 12,
+                    padding: "14px 12px",
+                    cursor: "pointer",
+                    textAlign: "center",
+                    transition: "all .2s",
+                    boxShadow: active ? `0 0 16px ${th.color}44` : "none",
+                  }}
+                  onMouseEnter={e => { if (!active) e.currentTarget.style.transform = "translateY(-2px)"; }}
+                  onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; }}
+                >
+                  <div style={{
+                    fontFamily: "var(--font-orbitron), monospace",
+                    fontSize: 16,
+                    fontWeight: 900,
+                    color: th.color,
+                    marginBottom: 6,
+                    textShadow: th.id === "clean" ? "none" : `0 0 8px ${th.color}88`,
+                  }}>
+                    16:45:00
+                  </div>
+                  <div style={{
+                    fontFamily: "var(--font-rajdhani), sans-serif",
+                    fontSize: 11,
+                    fontWeight: 700,
+                    letterSpacing: 2,
+                    color: active ? th.color : "rgba(255,255,255,0.6)",
+                    textTransform: "uppercase",
+                  }}>
+                    {th.name} {active ? "✓" : ""}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
         {/* VISIBILITY */}
         <div className="card full-card">
           <div className="card-title"><span>Visibility</span> Widget Visibility</div>
