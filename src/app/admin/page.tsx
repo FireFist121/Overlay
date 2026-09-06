@@ -16,6 +16,7 @@ interface OverlayState {
   promoText?: string;
   promoStyle?: PromoStyle;
   promoSegments?: PromoSegment[][];
+  theme?: string;
   _action?: string;
 }
 interface LogEntry {

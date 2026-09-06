@@ -13,6 +13,7 @@ interface OverlayState {
   promoText?: string;
   promoStyle?: PromoStyle;
   promoSegments?: PromoSegment[][];
+  theme?: string;
 }
 
 function pad(n: number) { return String(n).padStart(2, "0"); }
@@ -100,6 +101,7 @@ function WidgetInner() {
 
   const showTimer  = type !== "donors" && state.showTimer;
   const showDonors = type !== "timer"  && state.showDonors;
+  const urgent     = localSecs <= 30 && localRunning;
   const themeClass = state.theme && state.theme !== "default" ? ` theme-${state.theme}` : "";
 
   return (
