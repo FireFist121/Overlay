@@ -112,6 +112,7 @@
       justify-content: center;
       margin-bottom: 10px;
       box-shadow: 0 0 15px rgba(0,210,255,0.1);
+      transition: all 0.3s ease;
     }
     .list-header-title {
       font-family: 'Rajdhani', sans-serif;
@@ -121,6 +122,7 @@
       color: #00d2ff;
       text-transform: uppercase;
       text-shadow: 0 0 8px #00d2ff;
+      transition: all 0.3s ease;
     }
 
     #donators-list { display: flex; flex-direction: column; gap: 8px; }
@@ -136,7 +138,43 @@
       position: relative;
       overflow: hidden;
       animation: slideIn 0.5s ease both;
+      transition: all 0.3s ease;
     }
+
+    /* Donor Block Theme Variations */
+    #donator-block.theme-gold .list-header { background: #1a1600; border-color: rgba(255,215,0,0.5); box-shadow: 0 0 15px rgba(255,215,0,0.15); }
+    #donator-block.theme-gold .list-header-title { color: #ffd700; text-shadow: 0 0 8px #ffd700; }
+    #donator-block.theme-gold .donor-card { background: linear-gradient(135deg, #2a2200 0%, #100e00 80%); border-color: rgba(255,215,0,0.5); }
+    #donator-block.theme-gold .donor-rank { color: #ffd700; text-shadow: 0 0 10px #ffd700; }
+    #donator-block.theme-gold .donor-amount { border-color: #ffd700; color: #ffd700; }
+
+    #donator-block.theme-red .list-header { background: #20050a; border-color: rgba(255,77,109,0.5); box-shadow: 0 0 15px rgba(255,77,109,0.15); }
+    #donator-block.theme-red .list-header-title { color: #ff4d6d; text-shadow: 0 0 8px #ff4d6d; }
+    #donator-block.theme-red .donor-card { background: linear-gradient(135deg, #330712 0%, #0f0205 80%); border-color: rgba(255,77,109,0.5); }
+    #donator-block.theme-red .donor-card::before { background: #ff4d6d; box-shadow: 0 0 10px #ff4d6d; }
+    #donator-block.theme-red .donor-rank { color: #ff4d6d; text-shadow: 0 0 10px #ff4d6d; }
+    #donator-block.theme-red .donor-amount { border-color: #ff4d6d; color: #ff4d6d; }
+
+    #donator-block.theme-emerald .list-header { background: #041a12; border-color: rgba(0,255,136,0.5); box-shadow: 0 0 15px rgba(0,255,136,0.15); }
+    #donator-block.theme-emerald .list-header-title { color: #00ff88; text-shadow: 0 0 8px #00ff88; }
+    #donator-block.theme-emerald .donor-card { background: linear-gradient(135deg, #062b1e 0%, #020f0a 80%); border-color: rgba(0,255,136,0.5); }
+    #donator-block.theme-emerald .donor-card::before { background: #00ff88; box-shadow: 0 0 10px #00ff88; }
+    #donator-block.theme-emerald .donor-rank { color: #00ff88; text-shadow: 0 0 10px #00ff88; }
+    #donator-block.theme-emerald .donor-amount { border-color: #00ff88; color: #00ff88; }
+
+    #donator-block.theme-purple .list-header { background: #180829; border-color: rgba(168,85,247,0.5); box-shadow: 0 0 15px rgba(168,85,247,0.15); }
+    #donator-block.theme-purple .list-header-title { color: #f0abfc; text-shadow: 0 0 8px #f0abfc; }
+    #donator-block.theme-purple .donor-card { background: linear-gradient(135deg, #2a0e47 0%, #0d0417 80%); border-color: rgba(168,85,247,0.5); }
+    #donator-block.theme-purple .donor-card::before { background: #f0abfc; box-shadow: 0 0 10px #f0abfc; }
+    #donator-block.theme-purple .donor-rank { color: #f0abfc; text-shadow: 0 0 10px #a855f7; }
+    #donator-block.theme-purple .donor-amount { border-color: #a855f7; color: #f0abfc; }
+
+    #donator-block.theme-clean .list-header { background: #111827; border-color: rgba(255,255,255,0.25); box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+    #donator-block.theme-clean .list-header-title { color: #ffffff; text-shadow: none; }
+    #donator-block.theme-clean .donor-card { background: #1f2937; border-color: rgba(255,255,255,0.2); }
+    #donator-block.theme-clean .donor-card::before { background: #ffffff; box-shadow: none; }
+    #donator-block.theme-clean .donor-rank { color: #ffffff; text-shadow: none; }
+    #donator-block.theme-clean .donor-amount { border-color: rgba(255,255,255,0.3); color: #ffffff; }
     .donor-card::before {
       content: '';
       position: absolute;
@@ -261,6 +299,10 @@
     const pill = document.querySelector('.timer-pill');
     if (pill) {
       pill.className = 'timer-pill' + (data.theme && data.theme !== 'default' ? ' theme-' + data.theme : '');
+    }
+    const donorBlock = document.getElementById('donator-block');
+    if (donorBlock) {
+      donorBlock.className = (data.theme && data.theme !== 'default' ? 'theme-' + data.theme : '');
     }
 
     // Timer value

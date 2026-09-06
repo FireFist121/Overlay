@@ -163,7 +163,7 @@ function WidgetInner() {
         </div>
       )}
       {showDonors && (
-        <div className="donor-block">
+        <div className={`donor-block${themeClass}`}>
           <div className="list-header">
             <span className="list-header-title">TOP SUPPORTERS</span>
           </div>

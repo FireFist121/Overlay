@@ -147,12 +147,42 @@ html, body { background: transparent; color: var(--white); font-family: var(--fo
 }
 
 .donor-block { width: 200px; }
-.list-header { background:var(--navy); border:1px solid rgba(0,210,255,.3); border-radius:12px; padding:12px; display:flex; align-items:center; justify-content:center; margin-bottom:10px; box-shadow:0 0 15px rgba(0,210,255,.1); }
-.list-header-title { font-family:var(--font-rajdhani),sans-serif; font-weight:700; font-size:13px; letter-spacing:4px; color:var(--cyan); text-transform:uppercase; text-shadow:0 0 8px var(--cyan); text-align:center; display:block; line-height: 1.4; }
+.list-header { background:var(--navy); border:1px solid rgba(0,210,255,.3); border-radius:12px; padding:12px; display:flex; align-items:center; justify-content:center; margin-bottom:10px; box-shadow:0 0 15px rgba(0,210,255,.1); transition: all 0.3s ease; }
+.list-header-title { font-family:var(--font-rajdhani),sans-serif; font-weight:700; font-size:13px; letter-spacing:4px; color:var(--cyan); text-transform:uppercase; text-shadow:0 0 8px var(--cyan); text-align:center; display:block; line-height: 1.4; transition: all 0.3s ease; }
 .donors-list { display:flex; flex-direction:column; gap:8px; }
-.donor-card { --card-color: var(--gold); --card-border: rgba(255,215,0,.4); background:linear-gradient(135deg,#1f1a00 0%,var(--navy2) 80%); border:1px solid var(--card-border); border-radius:10px; padding:10px 14px; display:flex; align-items:center; gap:12px; position:relative; overflow:hidden; animation:slideIn .5s ease both; }
+.donor-card { --card-color: var(--gold); --card-border: rgba(255,215,0,.4); background:linear-gradient(135deg,#1f1a00 0%,var(--navy2) 80%); border:1px solid var(--card-border); border-radius:10px; padding:10px 14px; display:flex; align-items:center; gap:12px; position:relative; overflow:hidden; animation:slideIn .5s ease both; transition: all 0.3s ease; }
 .donor-card::before { content:""; position:absolute; left:0; top:0; bottom:0; width:4px; background:var(--card-color); box-shadow:0 0 10px var(--card-color); }
 
+/* Donor Block Theme Variations */
+.donor-block.theme-gold .list-header { background: #1a1600; border-color: rgba(255,215,0,0.5); box-shadow: 0 0 15px rgba(255,215,0,0.15); }
+.donor-block.theme-gold .list-header-title { color: #ffd700; text-shadow: 0 0 8px #ffd700; }
+.donor-block.theme-gold .donor-card { --card-color: #ffd700; --card-border: rgba(255,215,0,0.5); background: linear-gradient(135deg, #2a2200 0%, #100e00 80%); }
+.donor-block.theme-gold .donor-rank { color: #ffd700; text-shadow: 0 0 10px #ffd700; }
+.donor-block.theme-gold .donor-amount { border-color: #ffd700; color: #ffd700; }
+
+.donor-block.theme-red .list-header { background: #20050a; border-color: rgba(255,77,109,0.5); box-shadow: 0 0 15px rgba(255,77,109,0.15); }
+.donor-block.theme-red .list-header-title { color: #ff4d6d; text-shadow: 0 0 8px #ff4d6d; }
+.donor-block.theme-red .donor-card { --card-color: #ff4d6d; --card-border: rgba(255,77,109,0.5); background: linear-gradient(135deg, #330712 0%, #0f0205 80%); }
+.donor-block.theme-red .donor-rank { color: #ff4d6d; text-shadow: 0 0 10px #ff4d6d; }
+.donor-block.theme-red .donor-amount { border-color: #ff4d6d; color: #ff4d6d; }
+
+.donor-block.theme-emerald .list-header { background: #041a12; border-color: rgba(0,255,136,0.5); box-shadow: 0 0 15px rgba(0,255,136,0.15); }
+.donor-block.theme-emerald .list-header-title { color: #00ff88; text-shadow: 0 0 8px #00ff88; }
+.donor-block.theme-emerald .donor-card { --card-color: #00ff88; --card-border: rgba(0,255,136,0.5); background: linear-gradient(135deg, #062b1e 0%, #020f0a 80%); }
+.donor-block.theme-emerald .donor-rank { color: #00ff88; text-shadow: 0 0 10px #00ff88; }
+.donor-block.theme-emerald .donor-amount { border-color: #00ff88; color: #00ff88; }
+
+.donor-block.theme-purple .list-header { background: #180829; border-color: rgba(168,85,247,0.5); box-shadow: 0 0 15px rgba(168,85,247,0.15); }
+.donor-block.theme-purple .list-header-title { color: #f0abfc; text-shadow: 0 0 8px #f0abfc; }
+.donor-block.theme-purple .donor-card { --card-color: #f0abfc; --card-border: rgba(168,85,247,0.5); background: linear-gradient(135deg, #2a0e47 0%, #0d0417 80%); }
+.donor-block.theme-purple .donor-rank { color: #f0abfc; text-shadow: 0 0 10px #a855f7; }
+.donor-block.theme-purple .donor-amount { border-color: #a855f7; color: #f0abfc; }
+
+.donor-block.theme-clean .list-header { background: #111827; border-color: rgba(255,255,255,0.25); box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+.donor-block.theme-clean .list-header-title { color: #ffffff; text-shadow: none; }
+.donor-block.theme-clean .donor-card { --card-color: #ffffff; --card-border: rgba(255,255,255,0.2); background: #1f2937; }
+.donor-block.theme-clean .donor-rank { color: #ffffff; text-shadow: none; }
+.donor-block.theme-clean .donor-amount { border-color: rgba(255,255,255,0.3); color: #ffffff; }
 
 @keyframes slideIn { from{opacity:0;transform:translateX(-20px)} to{opacity:1;transform:translateX(0)} }
 .donor-rank { font-family:var(--font-orbitron),monospace; font-size:15px; font-weight:900; color:var(--card-color); text-shadow:0 0 10px var(--card-color); width:24px; text-align:center; flex-shrink:0; }
