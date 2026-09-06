@@ -42,7 +42,8 @@ html, body { background: transparent; color: var(--white); font-family: var(--fo
   border: 2px solid rgba(0, 210, 255, 0.55);
   border-radius: 60px;
   padding: 14px 44px;
-  display: inline-flex;
+  display: flex;
+  width: 360px;
   justify-content: center;
   align-items: center;
   box-shadow:
@@ -57,9 +58,23 @@ html, body { background: transparent; color: var(--white); font-family: var(--fo
   font-size: 52px;
   font-weight: 900;
   color: var(--white);
-  letter-spacing: 6px;
   text-shadow: 0 0 8px rgba(0, 210, 255, 0.4);
   line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+.t-digit {
+  display: inline-block;
+  width: 0.72em;
+  text-align: center;
+}
+.t-sep {
+  display: inline-block;
+  width: 0.32em;
+  text-align: center;
 }
 .timer-display-new.urgent {
   color: var(--red);

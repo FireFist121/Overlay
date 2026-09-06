@@ -103,11 +103,15 @@ function WidgetInner() {
   const urgent     = localSecs <= 30 && localRunning;
 
   return (
-    <div style={{ background: "transparent", width: "fit-content", minWidth: 0, fontFamily: "Inter, sans-serif", overflow: "visible" }}>
+    <div style={{ background: "transparent", width: 420, fontFamily: "Inter, sans-serif", overflow: "visible", display: "flex", flexDirection: "column", alignItems: "center" }}>
       {showTimer && (
-        <div className="timer-block">
+        <div className="timer-block" style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
           <div className="timer-pill">
-            <div className={`timer-display-new${urgent ? " urgent" : ""}`}>{formatTime(localSecs)}</div>
+            <div className={`timer-display-new${urgent ? " urgent" : ""}`}>
+              {formatTime(localSecs).split("").map((ch, idx) => (
+                <span key={idx} className={ch === ":" ? "t-sep" : "t-digit"}>{ch}</span>
+              ))}
+            </div>
           </div>
           {(state.promoSegments && state.promoSegments.length > 0) ? (
             <div className="timer-promo-dynamic">
