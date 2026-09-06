@@ -35,11 +35,23 @@
       font-size: 42px;
       font-weight: 900;
       color: #ffffff;
-      letter-spacing: 4px;
       text-shadow: 0 0 6px rgba(0,210,255,0.35);
       line-height: 1;
-      font-variant-numeric: tabular-nums;
-      font-feature-settings: "tnum" 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Fixed-width slots so no digit ever shifts its neighbours */
+    .t-digit {
+      display: inline-block;
+      width: 0.72em;       /* wide enough for any Orbitron digit */
+      text-align: center;
+    }
+    .t-sep {
+      display: inline-block;
+      width: 0.32em;
+      text-align: center;
     }
 
     #timer-display.urgent {
@@ -245,8 +257,16 @@
 
   // ── TIMER DISPLAY ────────────────────────────────────────────────────────────
   function setTimerDisplay(secs, running) {
-    const el = document.getElementById('timer-display');
-    el.textContent = fmt(secs);
+    const el  = document.getElementById('timer-display');
+    const str = fmt(secs);   // "HH:MM:SS"
+
+    // Build fixed-width spans so no digit ever shifts its neighbours
+    el.innerHTML = str.split('').map(ch =>
+      ch === ':'
+        ? `<span class="t-sep">:</span>`
+        : `<span class="t-digit">${ch}</span>`
+    ).join('');
+
     if (secs <= 30 && running) {
       el.classList.add('urgent');
     } else {
