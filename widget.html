@@ -23,7 +23,8 @@
       border: 1px solid rgba(0,210,255,0.4);
       border-radius: 50px;
       padding: 12px 32px;
-      display: inline-flex;
+      display: flex;
+      width: 310px;          /* fixed — never resizes */
       justify-content: center;
       align-items: center;
       box-shadow: 0 0 8px rgba(0,210,255,0.08);
@@ -178,7 +179,10 @@
 
 <div id="timer-block">
   <div class="timer-pill">
-    <div id="timer-display">00:00:00</div>
+    <!-- 8 fixed slots: H H : M M : S S -->
+    <div id="timer-display">
+      <span class="t-digit" id="td0">0</span><span class="t-digit" id="td1">0</span><span class="t-sep">:</span><span class="t-digit" id="td2">0</span><span class="t-digit" id="td3">0</span><span class="t-sep">:</span><span class="t-digit" id="td4">0</span><span class="t-digit" id="td5">0</span>
+    </div>
   </div>
   <div id="promo-block"></div>
 </div>
@@ -256,21 +260,24 @@
   }
 
   // ── TIMER DISPLAY ────────────────────────────────────────────────────────────
+  // Digit slot IDs: td0 td1 (hours) td2 td3 (mins) td4 td5 (secs)
+  const DIGIT_SLOTS = ['td0','td1','td2','td3','td4','td5'];
+
   function setTimerDisplay(secs, running) {
-    const el  = document.getElementById('timer-display');
-    const str = fmt(secs);   // "HH:MM:SS"
+    const str = fmt(secs); // "HH:MM:SS"
+    // str chars: [0]=H [1]=H [2]=: [3]=M [4]=M [5]=: [6]=S [7]=S
+    // slots map to indices 0,1,3,4,6,7 (skip colons at 2 and 5)
+    const digits = [str[0], str[1], str[3], str[4], str[6], str[7]];
+    digits.forEach((ch, i) => {
+      const el = document.getElementById(DIGIT_SLOTS[i]);
+      if (el && el.textContent !== ch) el.textContent = ch; // update only if changed
+    });
 
-    // Build fixed-width spans so no digit ever shifts its neighbours
-    el.innerHTML = str.split('').map(ch =>
-      ch === ':'
-        ? `<span class="t-sep">:</span>`
-        : `<span class="t-digit">${ch}</span>`
-    ).join('');
-
+    const disp = document.getElementById('timer-display');
     if (secs <= 30 && running) {
-      el.classList.add('urgent');
+      disp.classList.add('urgent');
     } else {
-      el.classList.remove('urgent');
+      disp.classList.remove('urgent');
     }
   }
 
@@ -291,6 +298,8 @@
   }
 
   // ── PROMO TEXT ───────────────────────────────────────────────────────────────
+  let lastPromoKey = null; // cache key — skip re-render if nothing changed
+
   function getCssFont(font) {
     if (!font || font === 'Rajdhani') return "'Rajdhani', sans-serif";
     if (font === 'Orbitron') return "'Orbitron', monospace";
@@ -299,6 +308,15 @@
   }
 
   function renderPromo(data) {
+    // Build a cheap cache key — only re-render DOM when content actually changes
+    const key = JSON.stringify({
+      seg: data.promoSegments,
+      txt: data.promoText,
+      sty: data.promoStyle
+    });
+    if (key === lastPromoKey) return; // nothing changed, leave DOM alone
+    lastPromoKey = key;
+
     const block = document.getElementById('promo-block');
     block.innerHTML = '';
 
